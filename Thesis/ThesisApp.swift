@@ -10,9 +10,13 @@ import SwiftData
 
 @main
 struct ThesisApp: App {
+    static let subsystem: String = "com.ada.Thesis"
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
-            Item.self,
+            Project.self,
+            ItemCollection.self
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
@@ -25,8 +29,17 @@ struct ThesisApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            AllProjectView()
         }
         .modelContainer(sharedModelContainer)
+    }
+}
+
+class AppDelegate: NSObject, UIApplicationDelegate {
+        
+    static var orientationLock = UIInterfaceOrientationMask.all //By default you want all your views to rotate freely
+
+    func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
+        return AppDelegate.orientationLock
     }
 }
