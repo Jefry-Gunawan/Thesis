@@ -5,6 +5,7 @@ Abstract:
 The guidance view that shows the video tutorial or the point cloud on the review screen.
 */
 
+#if !targetEnvironment(simulator) && !targetEnvironment(macCatalyst)
 import Foundation
 import RealityKit
 import SwiftUI
@@ -146,3 +147,4 @@ struct OnboardingTutorialView: View {
         onboardingStateTodetailTextMap[onboardingStateMachine.currentState] ?? ""
     }
 }
+#endif

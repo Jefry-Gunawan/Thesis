@@ -17,7 +17,14 @@ class ExportUSDZ {
     var usdzURL: URL?
     
     init(scene: SCNScene, view: SCNView, usdzURL: URL? = nil) {
-        self.scene = scene
+        let newScene = SCNScene()
+        for childnode in scene.rootNode.childNodes {
+            if childnode.name != "defaultFloor" {
+                let clonedNode = childnode.clone()
+                newScene.rootNode.addChildNode(clonedNode)
+            }
+        }
+        self.scene = newScene
         self.view = view
         self.usdzURL = usdzURL
     }

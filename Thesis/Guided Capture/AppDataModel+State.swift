@@ -5,6 +5,7 @@ Abstract:
 State enumeration for the data model type that maintains the state of the app.
 */
 
+#if !targetEnvironment(simulator) && !targetEnvironment(macCatalyst)
 import Foundation
 
 extension AppDataModel {
@@ -23,3 +24,4 @@ extension AppDataModel {
         case ended
     }
 }
+#endif

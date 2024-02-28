@@ -5,6 +5,7 @@ Abstract:
 View to show during the reconstruction phase until the session receives a model output.
 */
 
+#if !targetEnvironment(simulator) && !targetEnvironment(macCatalyst)
 import Foundation
 import RealityKit
 import SwiftUI
@@ -253,3 +254,4 @@ private struct TitleView: View {
         )
     }
 }
+#endif

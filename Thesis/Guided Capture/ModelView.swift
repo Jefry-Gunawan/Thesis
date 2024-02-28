@@ -6,6 +6,7 @@ A wrapper for AR QuickLook viewer that shows the reconstructed USDZ model
  file directly.
 */
 
+#if !targetEnvironment(simulator) && !targetEnvironment(macCatalyst)
 import ARKit
 import QuickLook
 import SwiftUI
@@ -17,7 +18,8 @@ struct ModelView: View {
     let endCaptureCallback: () -> Void
 
     var body: some View {
-        ARQuickLookController(modelFile: modelFile, endCaptureCallback: endCaptureCallback)
+        CapturedObjectView(sceneView: CapturedSceneKitView(usdzURL: modelFile), usdzURL: modelFile, endCaptureCallback: endCaptureCallback)
+//        ARQuickLookController(modelFile: modelFile, endCaptureCallback: endCaptureCallback)
     }
 }
 
@@ -75,3 +77,4 @@ private class QLPreviewControllerWrapper: UIViewController {
         }
     }
 }
+#endif

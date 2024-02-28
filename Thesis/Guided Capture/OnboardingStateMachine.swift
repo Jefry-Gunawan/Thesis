@@ -5,6 +5,7 @@ Abstract:
 The state machine this sample uses to transition between the review screens, playing the tutorials, and showing the guidance text.
 */
 
+#if !targetEnvironment(simulator) && !targetEnvironment(macCatalyst)
 import Foundation
 import os
 
@@ -151,3 +152,4 @@ enum OnboardingUserInput: Equatable {
     case objectCannotBeFlipped
     case flipObjectAnyway
 }
+#endif

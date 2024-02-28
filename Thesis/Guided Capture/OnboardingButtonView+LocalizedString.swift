@@ -5,6 +5,7 @@ Abstract:
 The localized strings the onboarding button view uses.
 */
 
+#if !targetEnvironment(simulator) && !targetEnvironment(macCatalyst)
 import Foundation
 
 extension OnboardingButtonView {
@@ -52,3 +53,4 @@ extension OnboardingButtonView {
         )
     }
 }
+#endif

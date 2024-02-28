@@ -7,7 +7,10 @@
 
 import SwiftUI
 import SwiftData
+
+#if !targetEnvironment(simulator) && !targetEnvironment(macCatalyst)
 import RealityKit
+#endif
 
 struct FloatingButtonView: View {
     @Environment(\.modelContext) private var modelContext
@@ -30,7 +33,7 @@ struct FloatingButtonView: View {
     @Binding var activeScene: ScenekitView
     var actionExport: () -> Void
     var actionShare: () -> Void
-    @Binding var itemCollectionOpened: Bool
+    @State var itemCollectionOpened: Bool = false
     
     var body: some View {
         VStack {
@@ -54,7 +57,9 @@ struct FloatingButtonView: View {
                         })
                     }
                 })
+                
                 Spacer()
+                
                 ZStack {
                     RoundedRectangle(cornerRadius: 10)
                         .frame(width: 300, height: 50)
@@ -76,11 +81,15 @@ struct FloatingButtonView: View {
                         
                         // Object Capture
                         Button(action: {
+                            #if !targetEnvironment(simulator) && !targetEnvironment(macCatalyst)
                             if (ObjectCaptureSession.isSupported) {
                                 self.isObjectCaptureViewPresented = true
                             } else {
                                 self.isNotSupported = true
                             }
+                            #else
+                            self.isNotSupported = true
+                            #endif
                         }, label: {
                             Image(systemName: "viewfinder.rectangular")
                                 .foregroundStyle(textColor)
@@ -107,11 +116,19 @@ struct FloatingButtonView: View {
                 
             }
             .padding()
+            
+            if itemCollectionOpened {
+                ItemCollectionView(activeScene: $activeScene)
+                    .padding(.horizontal)
+            }
+            
             Spacer()
         }
+#if !targetEnvironment(simulator) && !targetEnvironment(macCatalyst)
         .fullScreenCover(isPresented: $isObjectCaptureViewPresented, content: {
             GuidedCaptureView()
         })
+#endif
     }
 }
 

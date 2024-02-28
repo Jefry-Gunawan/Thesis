@@ -5,6 +5,7 @@ Abstract:
 Custom SwiftUI View for showing the tutorial stack.
 */
 
+#if !targetEnvironment(simulator) && !targetEnvironment(macCatalyst)
 import SwiftUI
 
 /// Top-level view containing a tabbed view of each of the help pages.
@@ -214,3 +215,4 @@ struct HelpPageView_Previews: PreviewProvider {
     }
 }
 #endif // DEBUG
+#endif // Simulator & Catalyst

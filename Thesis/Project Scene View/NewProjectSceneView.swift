@@ -16,29 +16,20 @@ struct NewProjectSceneView: View {
     
     @State var sceneView: ScenekitView = ScenekitView(loadSceneBool: false)
     
-    @State private var itemCollectionOpened: Bool = false
-    
     var body: some View {
         ZStack {
             sceneView
                 .edgesIgnoringSafeArea(.all)
             
-            VStack {
-                FloatingButtonView(
-                    activeScene: $sceneView,
-                    actionExport: {
-                        sceneView.export(selector: 1)
-                    },
-                    actionShare: {
-                        sceneView.export(selector: 2)
-                    },
-                    itemCollectionOpened: $itemCollectionOpened
-                )
-                
-                if itemCollectionOpened {
-                    ItemCollectionView()
+            FloatingButtonView(
+                activeScene: $sceneView,
+                actionExport: {
+                    sceneView.export(selector: 1)
+                },
+                actionShare: {
+                    sceneView.export(selector: 2)
                 }
-            }
+            )
         }
         .toolbar(.hidden)
         .onAppear {

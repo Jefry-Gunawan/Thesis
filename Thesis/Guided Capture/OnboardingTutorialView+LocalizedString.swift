@@ -5,6 +5,7 @@ Abstract:
 The localized strings the onboarding tutorial view uses.
 */
 
+#if !targetEnvironment(simulator) && !targetEnvironment(macCatalyst)
 import Foundation
 
 extension OnboardingTutorialView {
@@ -196,3 +197,4 @@ extension OnboardingTutorialView {
         )
     }
 }
+#endif

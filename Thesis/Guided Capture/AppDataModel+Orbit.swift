@@ -5,6 +5,7 @@ Abstract:
 Device orbit component of a data model that maintains the state of the app.
 */
 
+#if !targetEnvironment(simulator) && !targetEnvironment(macCatalyst)
 import UIKit
 
 extension AppDataModel {
@@ -78,3 +79,4 @@ extension AppDataModel {
         case initial, capturing
     }
 }
+#endif

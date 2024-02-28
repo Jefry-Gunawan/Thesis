@@ -7,7 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9407C20F2B7A4700005B0B98 /* CapturedObjectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9407C20E2B7A4700005B0B98 /* CapturedObjectView.swift */; };
+		9407C2112B7A473A005B0B98 /* CapturedSceneKitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9407C2102B7A473A005B0B98 /* CapturedSceneKitView.swift */; };
 		9426DA962B73DBD600E1D2D5 /* AllProjectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9426DA952B73DBD600E1D2D5 /* AllProjectView.swift */; };
+		9435DB2D2B80D7ED00CFE678 /* MoveNodeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9435DB2C2B80D7ED00CFE678 /* MoveNodeModel.swift */; };
 		9469A4F92B68DEEE00E807A8 /* NewProjectSceneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9469A4F82B68DEEE00E807A8 /* NewProjectSceneView.swift */; };
 		9469A4FB2B68DF4C00E807A8 /* ScenekitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9469A4FA2B68DF4C00E807A8 /* ScenekitView.swift */; };
 		9470CD732B70A28600FF1EE1 /* Coordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9470CD722B70A28600FF1EE1 /* Coordinator.swift */; };
@@ -53,6 +56,7 @@
 		949E57EF2B78A80900BCEA1A /* OnboardingTutorialView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 949E57CB2B78A80900BCEA1A /* OnboardingTutorialView.swift */; };
 		949E57F12B78AF2B00BCEA1A /* ItemCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 949E57F02B78AF2B00BCEA1A /* ItemCollectionView.swift */; };
 		94AD45062B7373B200EEF65E /* ARViewContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94AD45052B7373B200EEF65E /* ARViewContainer.swift */; };
+		94B8D8372B7B9BD3001DC61B /* Sample Room.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 94B8D8362B7B9BD3001DC61B /* Sample Room.usdz */; };
 		94BDA8832B68D62400351056 /* ThesisApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94BDA8822B68D62400351056 /* ThesisApp.swift */; };
 		94BDA8852B68D62400351056 /* ContentViewSwiftData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94BDA8842B68D62400351056 /* ContentViewSwiftData.swift */; };
 		94BDA8872B68D62400351056 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94BDA8862B68D62400351056 /* Item.swift */; };
@@ -61,7 +65,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		9407C20E2B7A4700005B0B98 /* CapturedObjectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CapturedObjectView.swift; sourceTree = "<group>"; };
+		9407C2102B7A473A005B0B98 /* CapturedSceneKitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CapturedSceneKitView.swift; sourceTree = "<group>"; };
 		9426DA952B73DBD600E1D2D5 /* AllProjectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllProjectView.swift; sourceTree = "<group>"; };
+		9435DB2C2B80D7ED00CFE678 /* MoveNodeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoveNodeModel.swift; sourceTree = "<group>"; };
 		9469A4F82B68DEEE00E807A8 /* NewProjectSceneView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewProjectSceneView.swift; sourceTree = "<group>"; };
 		9469A4FA2B68DF4C00E807A8 /* ScenekitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScenekitView.swift; sourceTree = "<group>"; };
 		9470CD722B70A28600FF1EE1 /* Coordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coordinator.swift; sourceTree = "<group>"; };
@@ -107,6 +114,7 @@
 		949E57CB2B78A80900BCEA1A /* OnboardingTutorialView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnboardingTutorialView.swift; sourceTree = "<group>"; };
 		949E57F02B78AF2B00BCEA1A /* ItemCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemCollectionView.swift; sourceTree = "<group>"; };
 		94AD45052B7373B200EEF65E /* ARViewContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARViewContainer.swift; sourceTree = "<group>"; };
+		94B8D8362B7B9BD3001DC61B /* Sample Room.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = "Sample Room.usdz"; sourceTree = "<group>"; };
 		94BDA87F2B68D62400351056 /* Thesis.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Thesis.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		94BDA8822B68D62400351056 /* ThesisApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThesisApp.swift; sourceTree = "<group>"; };
 		94BDA8842B68D62400351056 /* ContentViewSwiftData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewSwiftData.swift; sourceTree = "<group>"; };
@@ -151,9 +159,11 @@
 		947323BE2B75ECB9007BA78A /* Scenekit */ = {
 			isa = PBXGroup;
 			children = (
+				9435DB2C2B80D7ED00CFE678 /* MoveNodeModel.swift */,
 				9469A4FA2B68DF4C00E807A8 /* ScenekitView.swift */,
 				9470CD722B70A28600FF1EE1 /* Coordinator.swift */,
 				9470CD742B70B4CD00FF1EE1 /* ExportUSDZ.swift */,
+				9407C2102B7A473A005B0B98 /* CapturedSceneKitView.swift */,
 			);
 			path = Scenekit;
 			sourceTree = "<group>";
@@ -188,6 +198,7 @@
 				949E57C92B78A80900BCEA1A /* CaptureFolderManager.swift */,
 				949E57CA2B78A80900BCEA1A /* ModelView.swift */,
 				949E57CB2B78A80900BCEA1A /* OnboardingTutorialView.swift */,
+				9407C20E2B7A4700005B0B98 /* CapturedObjectView.swift */,
 			);
 			path = "Guided Capture";
 			sourceTree = "<group>";
@@ -236,6 +247,7 @@
 				947323BE2B75ECB9007BA78A /* Scenekit */,
 				947323BB2B75E352007BA78A /* Project Scene View */,
 				94AD45052B7373B200EEF65E /* ARViewContainer.swift */,
+				94B8D8362B7B9BD3001DC61B /* Sample Room.usdz */,
 				94BDA8882B68D62600351056 /* Assets.xcassets */,
 				94BDA88D2B68D62600351056 /* Thesis.entitlements */,
 				94BDA88E2B68D62600351056 /* Info.plist */,
@@ -313,6 +325,7 @@
 				949E57DE2B78A80900BCEA1A /* ScanPasses-iPad-FixedHeight-1.mp4 in Resources */,
 				949E57D62B78A80900BCEA1A /* ScanPasses-iPhone-FixedHeight-unflippable-low.mp4 in Resources */,
 				949E57D92B78A80900BCEA1A /* ScanPasses-iPhone-FixedHeight-2.mp4 in Resources */,
+				94B8D8372B7B9BD3001DC61B /* Sample Room.usdz in Resources */,
 				94BDA88C2B68D62600351056 /* Preview Assets.xcassets in Resources */,
 				949E57DA2B78A80900BCEA1A /* ScanPasses-iPhone-FixedHeight-3.mp4 in Resources */,
 				949E57DC2B78A80900BCEA1A /* ScanPasses-iPad-FixedHeight-2.mp4 in Resources */,
@@ -344,6 +357,7 @@
 				949E57CC2B78A80900BCEA1A /* ShotFileInfo.swift in Sources */,
 				949E57D52B78A80900BCEA1A /* ProgressBarView.swift in Sources */,
 				949E57CE2B78A80900BCEA1A /* FeedbackMessages.swift in Sources */,
+				9435DB2D2B80D7ED00CFE678 /* MoveNodeModel.swift in Sources */,
 				9470CD752B70B4CD00FF1EE1 /* ExportUSDZ.swift in Sources */,
 				947323BA2B75E31C007BA78A /* LoadProjectSceneView.swift in Sources */,
 				949E57EC2B78A80900BCEA1A /* OnboardingView.swift in Sources */,
@@ -353,10 +367,12 @@
 				949E57E02B78A80900BCEA1A /* CaptureOverlayView.swift in Sources */,
 				949E57D32B78A80900BCEA1A /* OnboardingButtonView+LocalizedString.swift in Sources */,
 				949E57D12B78A80900BCEA1A /* OnboardingTutorialView+LocalizedString.swift in Sources */,
+				9407C20F2B7A4700005B0B98 /* CapturedObjectView.swift in Sources */,
 				94BDA8872B68D62400351056 /* Item.swift in Sources */,
 				949E57ED2B78A80900BCEA1A /* CaptureFolderManager.swift in Sources */,
 				949E57E92B78A80900BCEA1A /* GuidedCaptureView.swift in Sources */,
 				949E57CF2B78A80900BCEA1A /* TutorialVideoView.swift in Sources */,
+				9407C2112B7A473A005B0B98 /* CapturedSceneKitView.swift in Sources */,
 				949E57E82B78A80900BCEA1A /* AppDataModel.swift in Sources */,
 				94AD45062B7373B200EEF65E /* ARViewContainer.swift in Sources */,
 				949E57D22B78A80900BCEA1A /* AppDataModel+Orbit.swift in Sources */,

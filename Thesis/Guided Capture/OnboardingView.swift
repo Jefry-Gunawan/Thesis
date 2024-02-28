@@ -5,6 +5,7 @@ Abstract:
 The view that shows the guidance text and tutorials on the review screen.
 */
 
+#if !targetEnvironment(simulator) && !targetEnvironment(macCatalyst)
 import Foundation
 import RealityKit
 import SwiftUI
@@ -38,3 +39,4 @@ struct OnboardingView: View {
         return session.state == .finishing || session.state == .completed
     }
 }
+#endif

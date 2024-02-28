@@ -20,18 +20,29 @@ struct AllProjectView: View {
         GridItem(.flexible())
     ]
     
+    @State private var isAlertPresented = false
+    @State private var projectName = ""
+    @State private var selectedProject: Project = Project(id: UUID(), name: "", data: Data(), roomLength: 0, roomWidth: 0)
+    
     var body: some View {
         NavigationStack {
             ScrollView {
                 LazyVGrid(columns: columns, content: {
                     ForEach(projects) { project in
                         ProjectBoxView(project: project)
+                            .padding()
                             .contextMenu(ContextMenu(menuItems: {
                                 Button(action: {
-                                    deleteProject(selectedProject: project)
+                                    isAlertPresented.toggle()
+                                    selectedProject = project
                                 }, label: {
-                                    Text("Delete")
+                                    Text("Rename")
                                 })
+                                Button(role: .destructive) {
+                                    deleteProject(selectedProject: project)
+                                } label: {
+                                    Label("Delete", systemImage: "trash")
+                                }
                             }))
                     }
                 })
@@ -52,6 +63,11 @@ struct AllProjectView: View {
             }
             .navigationBarTitleDisplayMode(.large)
         }
+        .alert("New Project Name", isPresented: $isAlertPresented) {
+            TextField("Untitled", text: $projectName)
+            Button("OK", action: renameItem)
+            Button("Cancel", role: .cancel) { }
+        }
         .onAppear {
             AppDelegate.orientationLock = .landscape
         }
@@ -60,6 +76,19 @@ struct AllProjectView: View {
     private func deleteProject(selectedProject: Project) {
         withAnimation {
             modelContext.delete(selectedProject)
+        }
+    }
+    
+    private func renameItem() {
+        selectedProject.name = (projectName != "") ? projectName : "Untitled"
+        
+        selectedProject = Project(id: UUID(), name: "", data: Data(), roomLength: 0, roomWidth: 0)
+        projectName = ""
+        
+        do {
+            try modelContext.save()
+        } catch {
+            print("Failed to change name")
         }
     }
 }
@@ -83,6 +112,7 @@ struct ProjectBoxView: View {
         } label: {
             ZStack {
                 RoundedRectangle(cornerRadius: 10)
+                    .foregroundStyle(.regularMaterial)
                 Text("\(project.name)")
                     .foregroundStyle(textColor)
             }

@@ -5,6 +5,7 @@ Abstract:
 The view that plays the input video.
 */
 
+#if !targetEnvironment(simulator) && !targetEnvironment(macCatalyst)
 import AVKit
 import SwiftUI
 
@@ -113,3 +114,4 @@ class AVPlayerView: UIView {
         set { playerLayer.player = newValue }
     }
 }
+#endif

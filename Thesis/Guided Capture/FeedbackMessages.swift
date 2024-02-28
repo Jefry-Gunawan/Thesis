@@ -5,6 +5,7 @@ Abstract:
 Generates human-readable strings for each feedback state.
 */
 
+#if !targetEnvironment(simulator) && !targetEnvironment(macCatalyst)
 import Foundation
 import RealityKit
 import SwiftUI
@@ -58,3 +59,4 @@ final class FeedbackMessages {
         }
     }
 }
+#endif

@@ -5,6 +5,7 @@ Abstract:
 The view that plays the tutorial.
 */
 
+#if !targetEnvironment(simulator) && !targetEnvironment(macCatalyst)
 import SwiftUI
 
 struct TutorialVideoView: View {
@@ -55,3 +56,4 @@ struct TutorialVideoView: View {
         }
     }
 }
+#endif

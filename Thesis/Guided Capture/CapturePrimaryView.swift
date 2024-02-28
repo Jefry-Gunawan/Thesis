@@ -5,6 +5,7 @@ Abstract:
 Top-level view for the object capture session that shows the info panel and other items during the session.
 */
 
+#if !targetEnvironment(simulator) && !targetEnvironment(macCatalyst)
 import Foundation
 import RealityKit
 import SwiftUI
@@ -90,3 +91,4 @@ private struct GradientBackground: View {
         .allowsHitTesting(false)
     }
 }
+#endif

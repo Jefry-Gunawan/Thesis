@@ -5,6 +5,7 @@ Abstract:
 SwiftUI view that displays the feedback messages for scanning.
 */
 
+#if !targetEnvironment(simulator) && !targetEnvironment(macCatalyst)
 import Foundation
 import RealityKit
 import SwiftUI
@@ -25,3 +26,4 @@ struct FeedbackView: View {
         }
     }
 }
+#endif

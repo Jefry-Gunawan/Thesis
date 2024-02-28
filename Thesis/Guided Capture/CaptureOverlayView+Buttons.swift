@@ -5,6 +5,7 @@ Abstract:
 The buttons for the full-screen overlay UI that control the capture.
 */
 
+#if !targetEnvironment(simulator) && !targetEnvironment(macCatalyst)
 import SwiftUI
 import RealityKit
 import UniformTypeIdentifiers
@@ -247,3 +248,4 @@ extension CaptureOverlayView {
         func updateUIView(_ uiView: UIVisualEffectView, context: UIViewRepresentableContext<Self>) { uiView.effect = effect }
     }
 }
+#endif

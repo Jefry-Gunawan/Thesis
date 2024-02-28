@@ -5,6 +5,7 @@ Abstract:
 An asynchronous sequence filter this sample applies to the photogrammetry session.
 */
 
+#if !targetEnvironment(simulator) && !targetEnvironment(macCatalyst)
 import Foundation
 import RealityKit
 
@@ -47,3 +48,4 @@ struct UntilProcessingCompleteFilter<Base>: AsyncSequence,
         return nextElement
     }
 }
+#endif

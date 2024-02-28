@@ -1,6 +1,8 @@
+#if !targetEnvironment(simulator) && !targetEnvironment(macCatalyst)
 import RealityKit
 import SwiftUI
 import os
+
 
 @available(iOS 17.0, *)
 struct GuidedCaptureView: View {
@@ -37,7 +39,7 @@ struct GuidedCaptureView: View {
                 showReconstructionView = newState == .reconstructing || newState == .viewing
             }
         }
-        .sheet(isPresented: $showReconstructionView) {
+        .fullScreenCover(isPresented: $showReconstructionView) {
             if let folderManager = appModel.scanFolderManager {
                 ReconstructionPrimaryView(appModel: appModel, outputFile: folderManager.modelsFolder.appendingPathComponent("model-mobile.usdz"))
             }
@@ -72,6 +74,7 @@ private struct CircularProgressView: View {
         }
     }
 }
+#endif
 
 //#if DEBUG
 //@available(iOS 17.0, *)
@@ -81,3 +84,4 @@ private struct CircularProgressView: View {
 //    }
 //}
 //#endif
+

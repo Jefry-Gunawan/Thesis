@@ -5,6 +5,7 @@ Abstract:
 Value type for holding the various info about a particular snapshot file.
 */
 
+#if !targetEnvironment(simulator) && !targetEnvironment(macCatalyst)
 import Combine
 import Foundation
 import SwiftUI
@@ -25,3 +26,4 @@ struct ShotFileInfo {
 }
 
 extension ShotFileInfo: Identifiable { }
+#endif

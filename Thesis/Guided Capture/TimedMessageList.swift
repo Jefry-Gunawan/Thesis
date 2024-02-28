@@ -5,6 +5,7 @@ Abstract:
 A timed queue of messages that modifies published properties.
 */
 
+#if !targetEnvironment(simulator) && !targetEnvironment(macCatalyst)
 import Combine
 import Dispatch
 import Foundation
@@ -142,3 +143,4 @@ class TimedMessageList: ObservableObject {
         setTimer()
     }
 }
+#endif

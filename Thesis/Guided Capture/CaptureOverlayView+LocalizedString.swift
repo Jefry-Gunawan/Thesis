@@ -5,6 +5,7 @@ Abstract:
 The app's internal localized string type.
 */
 
+#if !targetEnvironment(simulator) && !targetEnvironment(macCatalyst)
 import Foundation
 
 extension CaptureOverlayView {
@@ -52,3 +53,4 @@ extension CaptureOverlayView {
             comment: "Title for help button on the object capture screen to show the tutorial pages.")
     }
 }
+#endif

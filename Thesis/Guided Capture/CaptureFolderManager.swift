@@ -5,6 +5,7 @@ Abstract:
 A class that supports the creation, listing, and filename support of a capture folder.
 */
 
+#if !targetEnvironment(simulator) && !targetEnvironment(macCatalyst)
 import Dispatch
 import Foundation
 import os
@@ -211,3 +212,4 @@ class CaptureFolderManager: ObservableObject {
         return documentsFolder.appendingPathComponent("Scans/", isDirectory: true)
     }
 }
+#endif

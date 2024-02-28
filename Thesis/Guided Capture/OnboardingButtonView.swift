@@ -5,6 +5,7 @@ Abstract:
 The buttons on the review screen.
 */
 
+#if !targetEnvironment(simulator) && !targetEnvironment(macCatalyst)
 import RealityKit
 import SwiftUI
 import os
@@ -199,3 +200,4 @@ private struct CancelButton: View {
             })
     }
 }
+#endif
