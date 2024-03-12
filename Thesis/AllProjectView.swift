@@ -23,6 +23,7 @@ struct AllProjectView: View {
     @State private var isAlertPresented = false
     @State private var projectName = ""
     @State private var selectedProject: Project = Project(id: UUID(), name: "", data: Data(), roomLength: 0, roomWidth: 0)
+    @State private var ARTapped = false
     
     var body: some View {
         NavigationStack {
@@ -54,7 +55,13 @@ struct AllProjectView: View {
                 NavigationLink {
                     NewProjectSceneView()
                 } label: {
-                    Image(systemName: "plus")
+                    Text("New Project")
+                }
+                
+                Button {
+                    ARTapped.toggle()
+                } label: {
+                    Text("AR")
                 }
 
                 Button(action: /*@START_MENU_TOKEN@*/{}/*@END_MENU_TOKEN@*/, label: {
@@ -68,6 +75,9 @@ struct AllProjectView: View {
             Button("OK", action: renameItem)
             Button("Cancel", role: .cancel) { }
         }
+        .fullScreenCover(isPresented: $ARTapped, content: {
+            ARPageView()
+        })
         .onAppear {
             AppDelegate.orientationLock = .landscape
         }

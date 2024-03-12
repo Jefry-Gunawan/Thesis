@@ -30,10 +30,12 @@ final class ItemCollection {
     var id: UUID
     var name: String
     var data: Data
+    var entityData: Data
     
-    init(id: UUID, name: String, data: Data) {
+    init(id: UUID, name: String, data: Data, entityData: Data) {
         self.id = id
         self.name = name
         self.data = data
+        self.entityData = entityData
     }
 }

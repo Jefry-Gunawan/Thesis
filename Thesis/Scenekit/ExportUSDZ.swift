@@ -17,9 +17,10 @@ class ExportUSDZ {
     var usdzURL: URL?
     
     init(scene: SCNScene, view: SCNView, usdzURL: URL? = nil) {
+        let bannedList = ["defaultFloor", "moveNode"]
         let newScene = SCNScene()
         for childnode in scene.rootNode.childNodes {
-            if childnode.name != "defaultFloor" {
+            if !bannedList.contains(childnode.name ?? ""){
                 let clonedNode = childnode.clone()
                 newScene.rootNode.addChildNode(clonedNode)
             }

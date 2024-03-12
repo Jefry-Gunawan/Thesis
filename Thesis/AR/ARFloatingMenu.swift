@@ -1,8 +1,8 @@
 //
-//  FloatingButtonView.swift
+//  ARFloatingMenu.swift
 //  Thesis
 //
-//  Created by Jefry Gunawan on 02/02/24.
+//  Created by Jefry Gunawan on 29/02/24.
 //
 
 import SwiftUI
@@ -12,9 +12,9 @@ import SwiftData
 import RealityKit
 #endif
 
-struct FloatingButtonView: View {
+struct ARFloatingMenu: View {
     @Environment(\.modelContext) private var modelContext
-    @Query private var projects: [Project]
+//    @Query private var projects: [Project]
     
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.dismiss) var dismiss
@@ -30,14 +30,15 @@ struct FloatingButtonView: View {
         }
     }
     
-    @Binding var activeScene: ScenekitView
-    var actionExport: () -> Void
-    var actionShare: () -> Void
+    @Binding var activeARView: ARViewContainer
+//    var actionExport: () -> Void
+//    var actionShare: () -> Void
     @State var itemCollectionOpened: Bool = false
     
     var body: some View {
         VStack {
             HStack {
+                // Back Button
                 Button(action: {
                     
                 }, label: {
@@ -47,8 +48,8 @@ struct FloatingButtonView: View {
                             .foregroundStyle(.regularMaterial)
                         Button(action: {
                             // Saving project
-                            let newProject = activeScene.saveNewScene()
-                            modelContext.insert(newProject)
+//                            let newProject = activeScene.saveNewScene()
+//                            modelContext.insert(newProject)
                             
                             dismiss()
                         }, label: {
@@ -62,19 +63,13 @@ struct FloatingButtonView: View {
                 
                 ZStack {
                     RoundedRectangle(cornerRadius: 10)
-                        .frame(width: 300, height: 50)
+                        .frame(width: 180, height: 50)
                         .foregroundStyle(.regularMaterial)
                     HStack {
                         Button(action: {
                             itemCollectionOpened.toggle()
                         }, label: {
                             Image(systemName: "chair.lounge.fill")
-                                .foregroundStyle(textColor)
-                        })
-                        .frame(width: 50, height: 50)
-                        
-                        Button(action: {}, label: {
-                            Image(systemName: "house.fill")
                                 .foregroundStyle(textColor)
                         })
                         .frame(width: 50, height: 50)
@@ -97,15 +92,7 @@ struct FloatingButtonView: View {
                         .frame(width: 50, height: 50)
                         
                         Button(action: {
-                            actionExport()
-                        }, label: {
-                            Text("AR")
-                                .foregroundStyle(textColor)
-                        })
-                        .frame(width: 50, height: 50)
-                        
-                        Button(action: {
-                            actionShare()
+//                            actionShare()
                         }, label: {
                             Image(systemName: "square.and.arrow.up")
                                 .foregroundStyle(textColor)
@@ -118,7 +105,7 @@ struct FloatingButtonView: View {
             .padding()
             
             if itemCollectionOpened {
-                ItemCollectionView(activeScene: $activeScene)
+                ARItemCollectionView(activeARView: $activeARView)
                     .padding(.horizontal)
             }
             
@@ -131,7 +118,3 @@ struct FloatingButtonView: View {
 #endif
     }
 }
-
-//#Preview {
-//    FloatingButtonView()
-//}

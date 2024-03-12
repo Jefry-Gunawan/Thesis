@@ -38,9 +38,5 @@ struct CapturedSceneKitView: UIViewRepresentable {
         if let modelasset = try? SCNScene(url: usdzURL), let modelNode = modelasset.rootNode.childNodes.first?.clone() {
             self.view.scene?.rootNode.addChildNode(modelNode)
         }
-//        let sceneSource = SCNSceneSource(url: usdzURL, options: nil)
-//        if let loadedScene = sceneSource?.scene(options: nil) {
-//            self.view.scene = loadedScene
-//        }
     }
 }

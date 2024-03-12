@@ -9,6 +9,7 @@
 import SwiftUI
 import SwiftData
 import SceneKit
+import RealityKit
 
 struct CapturedObjectView: View {
     @Environment(\.modelContext) private var modelContext
@@ -92,13 +93,19 @@ struct CapturedObjectView: View {
 //        task.resume()
         
         // Coba simpan Nodenya
+        var nodeData: Data? = nil
         if let modelasset = try? SCNScene(url: usdzURL), let modelNode = modelasset.rootNode.childNodes.first?.clone() {
-            let data = try! NSKeyedArchiver.archivedData(withRootObject: modelNode, requiringSecureCoding: true)
-            
-            let newItems = ItemCollection(id: UUID(), name: (fileName != "") ? fileName : "Untitled", data: data)
-            
-            modelContext.insert(newItems)
+            nodeData = try! NSKeyedArchiver.archivedData(withRootObject: modelNode, requiringSecureCoding: true)
         }
+        
+        var entityData: Data? = nil
+        if let entity = try? Entity.load(contentsOf: usdzURL) {
+            entityData = try! NSKeyedArchiver.archivedData(withRootObject: entity, requiringSecureCoding: true)
+        }
+        
+        let newItems = ItemCollection(id: UUID(), name: (fileName != "") ? fileName : "Untitled", data: nodeData!, entityData: entityData!)
+                    
+        modelContext.insert(newItems)
         
         dismiss()
     }

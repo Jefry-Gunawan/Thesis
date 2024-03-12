@@ -116,15 +116,18 @@ class Coordinator: NSObject, UIGestureRecognizerDelegate {
                 var translationDelta = SCNVector3(
                     x: Float(translation.x - lastPanTranslation.x),
                     y: Float(translation.y - lastPanTranslation.y),
-                    z: 0
+                    z: Float(translation.x - lastPanTranslation.x)
                 )
 
-                // Need more fixing
-                let (angle, axis) = parent.view.pointOfView!.orientation.toAxisAngle()
+                // Calculate rotation
+                let pointOfView = parent.view.pointOfView!
+                let (angle, axis) = pointOfView.orientation.toAxisAngle()
                 let rotationMatrix = SCNMatrix4MakeRotation(Float(angle), axis.x, axis.y, axis.z)
                 
+                // Transform translationDelta into the object's local coordinate system
                 translationDelta = SCNVector3MultMatrix4(translationDelta, rotationMatrix)
-                
+
+                // Apply translation to the selectedNode's position
                 var currentPosition = selectedNode.position
                 
                 if selectedMoveAxis == 1 {
@@ -132,7 +135,7 @@ class Coordinator: NSObject, UIGestureRecognizerDelegate {
                 } else if selectedMoveAxis == 2 {
                     currentPosition.y -= translationDelta.y * 0.01
                 } else if selectedMoveAxis == 3 {
-                    currentPosition.z += translationDelta.y * 0.01
+                    currentPosition.z += translationDelta.z * 0.01
                 }
                 
                 selectedNode.worldPosition = currentPosition
@@ -153,6 +156,7 @@ class Coordinator: NSObject, UIGestureRecognizerDelegate {
             return
         }
     }
+
     
     func addPanGesture() {
         let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan(_:)))
