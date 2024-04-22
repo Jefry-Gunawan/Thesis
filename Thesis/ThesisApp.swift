@@ -29,7 +29,7 @@ struct ThesisApp: App {
 
     var body: some Scene {
         WindowGroup {
-            AllProjectView()
+            ContentView()
         }
         .modelContainer(sharedModelContainer)
     }

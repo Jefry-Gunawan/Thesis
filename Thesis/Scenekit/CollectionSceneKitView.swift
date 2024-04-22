@@ -2,10 +2,10 @@ import SceneKit
 import SwiftUI
 import SwiftData
 
-struct CapturedSceneKitView: UIViewRepresentable {
+struct CollectionSceneKitView: UIViewRepresentable {
     var scene = SCNScene()
     var view = SCNView()
-    var usdzURL: URL
+    var collection: ItemCollection
     
     func makeUIView(context: Context) -> some UIView {
         view.scene = scene
@@ -19,7 +19,9 @@ struct CapturedSceneKitView: UIViewRepresentable {
         ambientLightNode.light = ambientLight
         view.scene?.rootNode.addChildNode(ambientLightNode)
         
-        loadScene()
+        if let loadedNode = try! NSKeyedUnarchiver.unarchivedObject(ofClass: SCNNode.self, from: collection.data) {
+            view.scene?.rootNode.addChildNode(loadedNode)
+        }
         
         view.pointOfView?.localTranslate(by: SCNVector3(x: 0, y: 0, z: -1))
         
@@ -28,17 +30,5 @@ struct CapturedSceneKitView: UIViewRepresentable {
     
     func updateUIView(_ uiView: UIViewType, context: Context) {
         
-    }
-    
-//    func makeCoordinator() -> Coordinator {
-//        Coordinator(self)
-//    }
-    
-    func loadScene() {
-        print("URL : \(usdzURL)")
-        
-        if let modelasset = try? SCNScene(url: usdzURL), let modelNode = modelasset.rootNode.childNodes.first?.clone() {
-            self.view.scene?.rootNode.addChildNode(modelNode)
-        }
     }
 }

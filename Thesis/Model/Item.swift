@@ -15,13 +15,15 @@ final class Project {
     var data: Data
     var roomLength: Float
     var roomWidth: Float
+    var snapshotProject: Data
     
-    init(id: UUID, name: String, data: Data, roomLength: Float, roomWidth: Float) {
+    init(id: UUID, name: String, data: Data, roomLength: Float, roomWidth: Float, snapshotProject: Data) {
         self.id = id
         self.name = name
         self.data = data
         self.roomLength = roomLength
         self.roomWidth = roomWidth
+        self.snapshotProject = snapshotProject
     }
 }
 
@@ -30,12 +32,14 @@ final class ItemCollection {
     var id: UUID
     var name: String
     var data: Data
-    var entityData: Data
+    var dataURL: String!
+    var snapshotItem: Data
     
-    init(id: UUID, name: String, data: Data, entityData: Data) {
+    init(id: UUID, name: String, data: Data, dataURL: String!, snapshotItem: Data) {
         self.id = id
         self.name = name
         self.data = data
-        self.entityData = entityData
+        self.dataURL = dataURL
+        self.snapshotItem = snapshotItem
     }
 }

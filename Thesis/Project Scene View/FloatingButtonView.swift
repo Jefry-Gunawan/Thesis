@@ -60,6 +60,13 @@ struct FloatingButtonView: View {
                 
                 Spacer()
                 
+                // Not done yet
+                ZStack {
+                    RoundedRectangle(cornerRadius: 10)
+                        .frame(maxWidth: .infinity, maxHeight: 50)
+                        .foregroundStyle(.regularMaterial)
+                }
+                
                 ZStack {
                     RoundedRectangle(cornerRadius: 10)
                         .frame(width: 300, height: 50)

@@ -17,7 +17,7 @@ struct ItemCollectionView: View {
     
     @State private var isAlertPresented = false
     @State private var fileName = ""
-    @State private var selectedItem: ItemCollection = ItemCollection(id: UUID(), name: "", data: Data(), entityData: Data())
+    @State private var selectedItem: ItemCollection = ItemCollection(id: UUID(), name: "", data: Data(), dataURL: nil, snapshotItem: Data())
     
     let columns = [
         GridItem(.flexible()),
@@ -82,7 +82,7 @@ struct ItemCollectionView: View {
     private func renameItem() {
         selectedItem.name = (fileName != "") ? fileName : "Untitled"
         
-        selectedItem = ItemCollection(id: UUID(), name: "", data: Data(), entityData: Data())
+        selectedItem = ItemCollection(id: UUID(), name: "", data: Data(), dataURL: nil, snapshotItem: Data())
         fileName = ""
         do {
             try modelContext.save()
@@ -111,14 +111,16 @@ struct ItemBoxView: View {
                 activeScene.view.scene?.rootNode.addChildNode(loadedNode)
             }
         } label: {
-            ZStack {
-                RoundedRectangle(cornerRadius: 10)
-                    .foregroundStyle(.regularMaterial)
+            VStack {
+                Image(uiImage: UIImage(data: item.snapshotItem)!)
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .frame(width: 150, height: 150)
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
                 Text("\(item.name)")
                     .foregroundStyle(textColor)
             }
         }
-        .frame(width: 150, height: 150)
         .padding()
     }
 }

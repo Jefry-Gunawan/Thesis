@@ -1,9 +1,11 @@
+#if !targetEnvironment(simulator) && !targetEnvironment(macCatalyst)
 import SwiftUI
 import RealityKit
 import ARKit
 
 struct ARViewContainer: UIViewRepresentable {
     var view: ARView = ARView(frame: .zero)
+    @State var anchor = AnchorEntity(plane: .horizontal)
     
     func makeUIView(context: Context) -> ARView {
 //        view.addCoaching()
@@ -17,8 +19,6 @@ struct ARViewContainer: UIViewRepresentable {
 //        }
         
         view.session.run(config)
-
-        let anchor = AnchorEntity(plane: .horizontal)
 
        // Create a box entity
         let box = MeshResource.generateBox(size: 0.1, cornerRadius: 0.01)
@@ -50,7 +50,7 @@ struct ARViewContainer: UIViewRepresentable {
         // To add movement gesture
         for tempEntity in anchor.children {
             if let modelEntity = tempEntity as? ModelEntity {
-                if let collisionComponent = modelEntity.components[CollisionComponent.self] as? CollisionComponent {
+                if modelEntity.components[CollisionComponent.self] is CollisionComponent {
                     view.installGestures(for: modelEntity)
                 }
             }
@@ -72,6 +72,77 @@ struct ARViewContainer: UIViewRepresentable {
         for tempEntity in uiView.scene.anchors {
             uiView.scene.anchors.remove(tempEntity)
         }
+    }
+    
+    func addItem(name: String, dataURL: String) {
+        let fileManager = FileManager.default
+            do {
+                // Get the documents directory URL
+                let documentsURL = try fileManager.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
+                
+                // Construct the file URL using the relative path
+                let fileURL = documentsURL.appendingPathComponent(dataURL)
+                
+                if fileManager.fileExists(atPath: fileURL.path) {
+                    print("File exists at URL: \(fileURL)")
+                    
+                    var item = try Entity.load(contentsOf: fileURL)
+                    
+                    // Buat ngambil dari object capture karena namanya selalu mesh
+                    if let model = item.findEntity(named: "Mesh") {
+                        item = model
+                    }
+    
+                    item.name = name
+    
+                    anchor.addChild(item)
+                    anchor.generateCollisionShapes(recursive: true)
+    
+                    // To add movement gesture
+                    for tempEntity in anchor.children {
+                        print("temp \(tempEntity)")
+                        if let modelEntity = tempEntity as? ModelEntity {
+                            if modelEntity.components[CollisionComponent.self] is CollisionComponent {
+                                print("aAa \(modelEntity)")
+                                view.installGestures(for: modelEntity)
+                            }
+                        }
+                    }
+                } else {
+                    print("File does not exist at URL: \(fileURL)")
+                }
+            } catch {
+                print("Error accessing file: \(error)")
+            }
+        
+//        let fileManager = FileManager.default
+//        if fileManager.fileExists(atPath: dataURL.path) {
+//            print("File exists at URL: \(dataURL)")
+//            
+//            do {
+//                let item = try Entity.load(contentsOf: dataURL)
+//                
+//                item.name = name
+//                
+//                anchor.addChild(item)
+//                anchor.generateCollisionShapes(recursive: true)
+//                
+//                // To add movement gesture
+//                for tempEntity in anchor.children {
+//                    if let modelEntity = tempEntity as? ModelEntity {
+//                        if let collisionComponent = modelEntity.components[CollisionComponent.self] as? CollisionComponent {
+//                            view.installGestures(for: modelEntity)
+//                        }
+//                    }
+//                }
+//                
+//                print("File contents retrieved")
+//            } catch {
+//                print("Error reading file: \(error)")
+//            }
+//        } else {
+//            print("File does not exist at URL: \(dataURL)")
+//        }
     }
     
     func makeCoordinator() -> Coordinator {
@@ -102,6 +173,7 @@ struct ARViewContainer: UIViewRepresentable {
        }
     }
 }
+#endif
 
 //extension ARView: ARCoachingOverlayViewDelegate {
 //    func addCoaching() {

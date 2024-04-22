@@ -30,7 +30,9 @@ struct ARFloatingMenu: View {
         }
     }
     
+#if !targetEnvironment(simulator) && !targetEnvironment(macCatalyst)
     @Binding var activeARView: ARViewContainer
+#endif
 //    var actionExport: () -> Void
 //    var actionShare: () -> Void
     @State var itemCollectionOpened: Bool = false
@@ -103,11 +105,12 @@ struct ARFloatingMenu: View {
                 
             }
             .padding()
-            
+#if !targetEnvironment(simulator) && !targetEnvironment(macCatalyst)
             if itemCollectionOpened {
                 ARItemCollectionView(activeARView: $activeARView)
                     .padding(.horizontal)
             }
+#endif
             
             Spacer()
         }

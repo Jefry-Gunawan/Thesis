@@ -4,7 +4,7 @@
 //
 //  Created by Jefry Gunawan on 28/02/24.
 //
-
+#if !targetEnvironment(simulator) && !targetEnvironment(macCatalyst)
 import SwiftUI
 
 struct ARPageView: View {
@@ -20,6 +20,7 @@ struct ARPageView: View {
         .toolbar(.hidden)
     }
 }
+#endif
 
 //#Preview {
 //    ARPageView()

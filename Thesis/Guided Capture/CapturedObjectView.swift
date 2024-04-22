@@ -98,16 +98,47 @@ struct CapturedObjectView: View {
             nodeData = try! NSKeyedArchiver.archivedData(withRootObject: modelNode, requiringSecureCoding: true)
         }
         
-        var entityData: Data? = nil
-        if let entity = try? Entity.load(contentsOf: usdzURL) {
-            entityData = try! NSKeyedArchiver.archivedData(withRootObject: entity, requiringSecureCoding: true)
-        }
+//        var entityData: Data? = nil
+//        if let entity = try? Entity.load(contentsOf: usdzURL) {
+//            entityData = try! NSKeyedArchiver.archivedData(withRootObject: entity, requiringSecureCoding: true)
+//        }
         
-        let newItems = ItemCollection(id: UUID(), name: (fileName != "") ? fileName : "Untitled", data: nodeData!, entityData: entityData!)
+        let dataURL = moveFileToPersistentStorage(temporaryURL: usdzURL)
+        
+        let snapImage = sceneView.view.snapshot()
+        
+        let imageData = snapImage.pngData() ?? Data()
+        
+        let newItems = ItemCollection(id: UUID(), name: (fileName != "") ? fileName : "Untitled", data: nodeData!, dataURL: dataURL, snapshotItem: imageData)
                     
         modelContext.insert(newItems)
         
         dismiss()
+    }
+    
+    func moveFileToPersistentStorage(temporaryURL: URL) -> String? {
+        let fileManager = FileManager.default
+        
+        do {
+            // Get the documents directory URL
+            let documentsURL = try fileManager.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
+            
+            // Generate a unique file name for the file in the documents directory
+            let uniqueFileName = UUID().uuidString + ".usdz"
+            let destinationURL = documentsURL.appendingPathComponent(uniqueFileName)
+            
+            // Move the file to the documents directory
+            try fileManager.moveItem(at: temporaryURL, to: destinationURL)
+            
+            print("File moved to: \(destinationURL)")
+            print("StoredItem saved with URL: \(destinationURL.absoluteString)")
+            
+            return uniqueFileName
+        } catch {
+            print("Error moving file: \(error)")
+        }
+        
+        return nil
     }
 }
 #endif

@@ -79,8 +79,8 @@ struct ScenekitView: UIViewRepresentable {
         // Add a point light to the scene
         let light = SCNLight()
         light.type = .omni
-//        light.intensity = 200
-//        light.temperature = 5000
+        light.intensity = 200
+        light.temperature = 6000
         let lightNode = SCNNode()
         lightNode.light = light
         lightNode.position = SCNVector3(x: 5, y: 5, z: 10)
@@ -88,8 +88,8 @@ struct ScenekitView: UIViewRepresentable {
         
         let light2 = SCNLight()
         light2.type = .omni
-//        light.intensity = 300
-//        light2.temperature = 5000
+        light.intensity = 300
+        light2.temperature = 6000
         let light2Node = SCNNode()
         light2Node.light = light2
         light2Node.position = SCNVector3(x: -5, y: 5, z: -10)
@@ -240,20 +240,28 @@ struct ScenekitView: UIViewRepresentable {
     func saveNewScene() -> Project {
         // Convert SceneKit content to Data
         let sceneData = try? NSKeyedArchiver.archivedData(withRootObject: view.scene!, requiringSecureCoding: true)
-//        sceneData.setValue(sceneData, forKeyPath: "sceneContent")
+        
+        let imageData = saveSnapshot()
         
         let projectCount = projects.count
         let newProject = Project(id: UUID(),
                                  name: "Project \(projectCount + 1)",
                                  data: sceneData!,
                                  roomLength: 0,
-                                 roomWidth: 0)
+                                 roomWidth: 0,
+                                 snapshotProject: imageData)
         
         return newProject
     }
     
     func saveScenetoExistingProject() -> Data {
         return try! NSKeyedArchiver.archivedData(withRootObject: view.scene!, requiringSecureCoding: true)
+    }
+    
+    func saveSnapshot() -> Data {
+        let snapImage = view.snapshot()
+        
+        return snapImage.pngData() ?? Data()
     }
     
     func export(selector: Int) {

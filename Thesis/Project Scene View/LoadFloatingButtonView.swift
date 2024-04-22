@@ -43,6 +43,7 @@ struct LoadFloatingButtonView: View {
                         Button(action: {
                             // Saving existing project
                             self.project.data = activeScene.saveScenetoExistingProject()
+                            self.project.snapshotProject = activeScene.saveSnapshot()
                             
                             dismiss()
                         }, label: {
@@ -62,7 +63,48 @@ struct LoadFloatingButtonView: View {
                 }
                 .frame(width: 300, height: 50)
                 
-                Spacer()
+                // Dimension Data
+                ZStack {
+                    RoundedRectangle(cornerRadius: 10)
+                        .frame(maxWidth: .infinity, maxHeight: 50)
+                        .foregroundStyle(.regularMaterial)
+                    HStack {
+                        HStack {
+                            Text("W :")
+                            ZStack {
+                                RoundedRectangle(cornerRadius: 10)
+                                    .frame(maxWidth: .infinity, maxHeight: 45)
+                                    .foregroundStyle(.regularMaterial)
+                            }
+                        }
+                        .padding()
+                        
+                        Spacer()
+                        
+                        HStack {
+                            Text("L :")
+                            ZStack {
+                                RoundedRectangle(cornerRadius: 10)
+                                    .frame(maxWidth: .infinity, maxHeight: 45)
+                                    .foregroundStyle(.regularMaterial)
+                            }
+                        }
+                        .padding()
+                        
+                        Spacer()
+                        
+                        HStack {
+                            Text("H :")
+                            ZStack {
+                                RoundedRectangle(cornerRadius: 10)
+                                    .frame(maxWidth: .infinity, maxHeight: 45)
+                                    .foregroundStyle(.regularMaterial)
+                            }
+                        }
+                        .padding()
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: 50)
+                }
                 
                 ZStack {
                     RoundedRectangle(cornerRadius: 10)

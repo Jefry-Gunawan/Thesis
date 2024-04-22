@@ -5,7 +5,7 @@
 //  Created by Jefry Gunawan on 29/02/24.
 //
 
-
+#if !targetEnvironment(simulator) && !targetEnvironment(macCatalyst)
 import SwiftUI
 import SwiftData
 import SceneKit
@@ -18,7 +18,7 @@ struct ARItemCollectionView: View {
     
     @State private var isAlertPresented = false
     @State private var fileName = ""
-    @State private var selectedItem: ItemCollection = ItemCollection(id: UUID(), name: "", data: Data(), entityData: Data())
+    @State private var selectedItem: ItemCollection = ItemCollection(id: UUID(), name: "", data: Data(), dataURL: nil, snapshotItem: Data())
     
     let columns = [
         GridItem(.flexible()),
@@ -83,7 +83,7 @@ struct ARItemCollectionView: View {
     private func renameItem() {
         selectedItem.name = (fileName != "") ? fileName : "Untitled"
         
-        selectedItem = ItemCollection(id: UUID(), name: "", data: Data(), entityData: Data())
+        selectedItem = ItemCollection(id: UUID(), name: "", data: Data(), dataURL: nil, snapshotItem: Data())
         fileName = ""
         do {
             try modelContext.save()
@@ -108,58 +108,19 @@ struct ARItemBoxView: View {
     
     var body: some View {
         Button {
-            if let loadedNode = try! NSKeyedUnarchiver.unarchivedObject(ofClass: SCNNode.self, from: item.data) {
-//                activeARView.view.scene?.rootNode.addChildNode(loadedNode)
-            }
+            activeARView.addItem(name: item.name, dataURL: item.dataURL)
         } label: {
-            ZStack {
-                RoundedRectangle(cornerRadius: 10)
-                    .foregroundStyle(.regularMaterial)
+            VStack {
+                Image(uiImage: UIImage(data: item.snapshotItem)!)
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .frame(width: 150, height: 150)
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
                 Text("\(item.name)")
                     .foregroundStyle(textColor)
             }
         }
-        .frame(width: 150, height: 150)
         .padding()
     }
-    
-//    func convertMaterial(_ material: SCNMaterial) -> SimpleMaterial {
-//        var rMaterial = SimpleMaterial()
-//
-//        // Handle base color
-//        if let baseColorContents = material.diffuse.contents {
-//            if let baseColor = baseColorContents as? UIColor {
-//                rMaterial.color = .color(baseColor)
-//            } else if let baseColorMap = baseColorContents as? UIImage {
-//                rMaterial.color = .texture(TextureResource.load(image: baseColorMap))
-//            }
-//        }
-//
-//        // Handle other material properties similarly...
-//        
-//        return rMaterial
-//    }
-//
-//    // Convert SceneKit node to RealityKit entity recursively
-//    func convertToEntity(from node: SCNNode) -> ModelEntity? {
-//        let entity = ModelEntity()
-//
-//        // Set the mesh if available
-//        if let geometry = node.geometry {
-//            let mesh = MeshResource.generate(from: geometry)
-//            entity.components.set(ModelComponent(mesh: mesh, materials: geometry.materials.map(convertMaterial)))
-//        }
-//
-//        // Set the transform
-//        entity.transform = Transform(matrix: simd_float4x4(node.transform))
-//
-//        // Convert child nodes
-//        for childNode in node.childNodes {
-//            if let childEntity = convertToEntity(from: childNode) {
-//                entity.addChild(childEntity)
-//            }
-//        }
-//
-//        return entity
-//    }
 }
+#endif
