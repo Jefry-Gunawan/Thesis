@@ -37,6 +37,8 @@ struct ARFloatingMenu: View {
 //    var actionShare: () -> Void
     @State var itemCollectionOpened: Bool = false
     
+    @ObservedObject var objectDimensionData: ObjectDimensionData
+    
     var body: some View {
         VStack {
             HStack {
@@ -49,10 +51,6 @@ struct ARFloatingMenu: View {
                             .frame(width: 50, height: 50)
                             .foregroundStyle(.regularMaterial)
                         Button(action: {
-                            // Saving project
-//                            let newProject = activeScene.saveNewScene()
-//                            modelContext.insert(newProject)
-                            
                             dismiss()
                         }, label: {
                             Image(systemName: "chevron.left")
@@ -61,7 +59,68 @@ struct ARFloatingMenu: View {
                     }
                 })
                 
-                Spacer()
+                if objectDimensionData.name != nil {
+                    // Dimension Data
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 10)
+                            .frame(maxWidth: .infinity, maxHeight: 50)
+                            .foregroundStyle(.regularMaterial)
+                        HStack {
+                            HStack {
+                                Text("W :")
+                                ZStack {
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .frame(maxWidth: .infinity, maxHeight: 40)
+                                        .foregroundStyle(.regularMaterial)
+                                    Text("\(objectDimensionData.width ?? "--")")
+                                }
+                            }
+                            .padding(.horizontal)
+                            
+                            Spacer()
+                            
+                            HStack {
+                                Text("L :")
+                                ZStack {
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .frame(maxWidth: .infinity, maxHeight: 40)
+                                        .foregroundStyle(.regularMaterial)
+                                    Text("\(objectDimensionData.length ?? "--")")
+                                }
+                            }
+                            .padding(.horizontal)
+                            
+                            Spacer()
+                            
+                            HStack {
+                                Text("H :")
+                                ZStack {
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .frame(maxWidth: .infinity, maxHeight: 40)
+                                        .foregroundStyle(.regularMaterial)
+                                    Text("\(objectDimensionData.height ?? "--")")
+                                }
+                            }
+                            .padding(.horizontal)
+                        }
+                        .frame(maxWidth: .infinity, maxHeight: 50)
+                    }
+                    
+                    // Remove Button
+                    Button {
+                        activeARView.removeEntity()
+                    } label: {
+                        ZStack {
+                            RoundedRectangle(cornerRadius: 10)
+                                .frame(width: 50, height: 50)
+                                .foregroundStyle(.regularMaterial)
+                            Image(systemName: "trash")
+                                .foregroundStyle(.white)
+                        }
+                    }
+                } else {
+                    Spacer()
+                }
                 
                 ZStack {
                     RoundedRectangle(cornerRadius: 10)

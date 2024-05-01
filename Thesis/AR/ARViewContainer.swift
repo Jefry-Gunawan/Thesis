@@ -7,6 +7,8 @@ struct ARViewContainer: UIViewRepresentable {
     var view: ARView = ARView(frame: .zero)
     @State var anchor = AnchorEntity(plane: .horizontal)
     
+    @ObservedObject var objectDimensionData: ObjectDimensionData
+    
     func makeUIView(context: Context) -> ARView {
 //        view.addCoaching()
         
@@ -56,6 +58,7 @@ struct ARViewContainer: UIViewRepresentable {
             }
         }
         
+        objectDimensionData.reset()
 
        return view
     }
@@ -114,35 +117,13 @@ struct ARViewContainer: UIViewRepresentable {
             } catch {
                 print("Error accessing file: \(error)")
             }
-        
-//        let fileManager = FileManager.default
-//        if fileManager.fileExists(atPath: dataURL.path) {
-//            print("File exists at URL: \(dataURL)")
-//            
-//            do {
-//                let item = try Entity.load(contentsOf: dataURL)
-//                
-//                item.name = name
-//                
-//                anchor.addChild(item)
-//                anchor.generateCollisionShapes(recursive: true)
-//                
-//                // To add movement gesture
-//                for tempEntity in anchor.children {
-//                    if let modelEntity = tempEntity as? ModelEntity {
-//                        if let collisionComponent = modelEntity.components[CollisionComponent.self] as? CollisionComponent {
-//                            view.installGestures(for: modelEntity)
-//                        }
-//                    }
-//                }
-//                
-//                print("File contents retrieved")
-//            } catch {
-//                print("Error reading file: \(error)")
-//            }
-//        } else {
-//            print("File does not exist at URL: \(dataURL)")
-//        }
+    }
+    
+    func removeEntity() {
+        if (self.objectDimensionData.selectedEntity != nil) {
+            self.anchor.removeChild(self.objectDimensionData.selectedEntity!)
+            self.objectDimensionData.reset()
+        }
     }
     
     func makeCoordinator() -> Coordinator {
@@ -152,8 +133,6 @@ struct ARViewContainer: UIViewRepresentable {
     // Coordinator
     class Coordinator: NSObject {
         var parent: ARViewContainer
-        
-        var selectedEntity: ModelEntity = ModelEntity()
 
         init(_ parent: ARViewContainer) {
             self.parent = parent
@@ -166,9 +145,22 @@ struct ARViewContainer: UIViewRepresentable {
             let hitTests = parent.view.hitTest(location)
             
             if let result = hitTests.first?.entity {
+                parent.objectDimensionData.selectedEntity = result
                 print("Hit entity found:", result.name)
+                
+                let width = (result.visualBounds(relativeTo: nil).max.x) - (result.visualBounds(relativeTo: nil).min.x)
+                let height = (result.visualBounds(relativeTo: nil).max.y) - (result.visualBounds(relativeTo: nil).min.y)
+                let length = (result.visualBounds(relativeTo: nil).max.z) - (result.visualBounds(relativeTo: nil).min.z)
+//                
+                parent.objectDimensionData.name = result.name
+                
+                parent.objectDimensionData.width = String(format: "%.2f", width)
+                parent.objectDimensionData.length = String(format: "%.2f", length)
+                parent.objectDimensionData.height = String(format: "%.2f", height)
             } else {
                 print("No entity found")
+                
+                parent.objectDimensionData.reset()
             }
        }
     }

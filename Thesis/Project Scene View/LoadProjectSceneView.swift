@@ -17,6 +17,8 @@ struct LoadProjectSceneView: View {
     var project: Project
     @State var sceneView: ScenekitView
     
+    @ObservedObject var objectDimensionData: ObjectDimensionData
+    
     var body: some View {
         ZStack {
             sceneView
@@ -30,7 +32,8 @@ struct LoadProjectSceneView: View {
                 },
                 actionShare: {
                     sceneView.export(selector: 2)
-                }
+                },
+                objectDimensionData: objectDimensionData
             )
         }
         .toolbar(.hidden)
@@ -39,8 +42,3 @@ struct LoadProjectSceneView: View {
         }
     }
 }
-
-//#Preview {
-//    LoadProjectSceneView(projectName: <#T##String#>, projectData: <#T##Data#>, sceneView: <#T##ScenekitView#>)
-//}
-

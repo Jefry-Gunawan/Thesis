@@ -14,7 +14,8 @@ struct NewProjectSceneView: View {
     @Query private var projects: [Project]
     @Query private var testers: [ItemCollection]
     
-    @State var sceneView: ScenekitView = ScenekitView(loadSceneBool: false)
+    @State var sceneView: ScenekitView
+    @ObservedObject var objectDimensionData: ObjectDimensionData
     
     var body: some View {
         ZStack {
@@ -28,7 +29,8 @@ struct NewProjectSceneView: View {
                 },
                 actionShare: {
                     sceneView.export(selector: 2)
-                }
+                },
+                objectDimensionData: objectDimensionData
             )
         }
         .toolbar(.hidden)
@@ -37,7 +39,7 @@ struct NewProjectSceneView: View {
         }
     }
 }
-
-#Preview {
-    NewProjectSceneView()
-}
+//
+//#Preview {
+//    NewProjectSceneView()
+//}

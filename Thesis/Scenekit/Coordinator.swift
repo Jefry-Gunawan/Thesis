@@ -33,6 +33,7 @@ class Coordinator: NSObject, UIGestureRecognizerDelegate {
                 print("Result Name : \(result.node.name ?? "")")
                 
                 selectedNode = result.node
+                parent.objectDimensionData.selectedNode = result.node
                 
                 let worldBoundingBox = selectedNode!.boundingBox
                 let worldMin = selectedNode!.convertPosition(worldBoundingBox.min, to: nil)
@@ -47,14 +48,20 @@ class Coordinator: NSObject, UIGestureRecognizerDelegate {
                 let zFloat = worldMax.z - worldMin.z
                 
                 parent.moveNodeModel.moveXNode.worldPosition = SCNVector3(0.5 + xFloat/3, 0, 0)
-                parent.moveNodeModel.moveYNode.worldPosition = SCNVector3(0, 0.5 + xFloat/3, 0)
-                parent.moveNodeModel.moveZNode.worldPosition = SCNVector3(0, 0, 0.5 + xFloat/3)
+                parent.moveNodeModel.moveYNode.worldPosition = SCNVector3(0, 0.5 + yFloat/3, 0)
+                parent.moveNodeModel.moveZNode.worldPosition = SCNVector3(0, 0, 0.5 + zFloat/3)
+                
+                parent.objectDimensionData.name = result.node.name ?? "Untitled"
+                parent.objectDimensionData.width = String(format: "%.2f", xFloat)
+                parent.objectDimensionData.length = String(format: "%.2f", yFloat)
+                parent.objectDimensionData.height = String(format: "%.2f", zFloat)
                 
                 parent.moveNodeModel.moveNode.worldPosition = result.node.worldPosition
                 parent.moveNodeModel.moveNode.isHidden = false
             }
         } else {
             parent.moveNodeModel.moveNode.isHidden = true
+            parent.objectDimensionData.reset()
         }
     }
     

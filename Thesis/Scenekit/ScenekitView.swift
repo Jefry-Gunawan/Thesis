@@ -20,14 +20,17 @@ struct ScenekitView: UIViewRepresentable {
     var view = SCNView()
     var usdzURL: URL?
     
+    @ObservedObject var objectDimensionData: ObjectDimensionData
+    
     @State var isEditMode: Bool = false
     @State var searchMoveNodeDone: Bool = false
     
     @ObservedObject var moveNodeModel: MoveNodeModel = MoveNodeModel()
     
-    init(loadSceneBool: Bool, loadedProject: Data = Data()) {
+    init(loadSceneBool: Bool, loadedProject: Data = Data(), objectDimensionData: ObjectDimensionData) {
         self.loadSceneBool = loadSceneBool
         self.loadedProject = loadedProject
+        self.objectDimensionData = objectDimensionData
     }
     
     func makeUIView(context: Context) -> some UIView {
@@ -55,6 +58,8 @@ struct ScenekitView: UIViewRepresentable {
         let holdGesture = UILongPressGestureRecognizer(target: context.coordinator, action: #selector(context.coordinator.handleLongPress(_:)))
         holdGesture.minimumPressDuration = 0.2
         view.addGestureRecognizer(holdGesture)
+        
+        objectDimensionData.reset()
         
         return view
     }
@@ -234,6 +239,14 @@ struct ScenekitView: UIViewRepresentable {
         // Kalau nyimpennya pakai SCNNode
         if let loadedNode = try! NSKeyedUnarchiver.unarchivedObject(ofClass: SCNNode.self, from: loadedItem) {
             view.scene?.rootNode.addChildNode(loadedNode)
+        }
+    }
+    
+    func removeNode() {
+        if objectDimensionData.selectedNode != nil {
+            objectDimensionData.selectedNode?.removeFromParentNode()
+            objectDimensionData.reset()
+            moveNodeModel.moveNode.isHidden = true
         }
     }
     

@@ -31,23 +31,23 @@ struct AllCollectionView: View {
         ScrollView {
             LazyVGrid(columns: columns, content: {
                 // Button for New Project
-//                NavigationLink {
-//                    NewProjectSceneView()
-//                } label: {
-//                    VStack {
-//                        ZStack {
-//                            RoundedRectangle(cornerRadius: 10)
-//                                .foregroundStyle(.regularMaterial)
-//                            Image(systemName: "plus")
-//                                .resizable()
-//                                .foregroundStyle(.regularMaterial)
-//                                .frame(width: 120, height: 120)
-//                        }
-//                        .frame(width: 250, height: 200)
-//                        Text("New Project")
-//                            .foregroundStyle(textColor)
-//                    }
-//                }
+                Button {
+                    
+                } label: {
+                    VStack {
+                        ZStack {
+                            RoundedRectangle(cornerRadius: 10)
+                                .foregroundStyle(.regularMaterial)
+                            Image(systemName: "plus")
+                                .resizable()
+                                .foregroundStyle(.regularMaterial)
+                                .frame(width: 120, height: 120)
+                        }
+                        .frame(width: 250, height: 200)
+                        Text("New Project")
+                            .foregroundStyle(textColor)
+                    }
+                }
                 
                 ForEach(collections) { collection in
                     CollectionBoxView(collection: collection)
@@ -69,31 +69,11 @@ struct AllCollectionView: View {
             })
             
         }
-//        .padding()
-//        .navigationTitle("All Projects")
-//        .toolbar {
-//            Button {
-//                ARTapped.toggle()
-//            } label: {
-//                Text("AR")
-//            }
-//
-//            Button(action: /*@START_MENU_TOKEN@*/{}/*@END_MENU_TOKEN@*/, label: {
-//                Text("Edit")
-//            })
-//        }
-//        .navigationBarTitleDisplayMode(.large)
         .alert("New Project Name", isPresented: $isAlertPresented) {
             TextField("Untitled", text: $collectionName)
             Button("OK", action: renameCollection)
             Button("Cancel", role: .cancel) { }
         }
-//        .fullScreenCover(isPresented: $ARTapped, content: {
-//            ARPageView()
-//        })
-//        .onAppear {
-//            AppDelegate.orientationLock = .landscape
-//        }
     }
     
     private func deleteCollection(selectedCollection: ItemCollection) {

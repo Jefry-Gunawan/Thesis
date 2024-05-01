@@ -24,6 +24,8 @@ struct AllProjectView: View {
     @State private var selectedProject: Project = Project(id: UUID(), name: "", data: Data(), roomLength: 0, roomWidth: 0, snapshotProject: Data())
     @State private var ARTapped = false
     
+    @ObservedObject var objectDimensionData: ObjectDimensionData
+    
     // For Light Mode & Dark Mode support
     @Environment(\.colorScheme) var colorScheme
     var textColor: Color {
@@ -39,7 +41,7 @@ struct AllProjectView: View {
             LazyVGrid(columns: columns, content: {
                 // Button for New Project
                 NavigationLink {
-                    NewProjectSceneView()
+                    NewProjectSceneView(sceneView: ScenekitView(loadSceneBool: false, objectDimensionData: objectDimensionData), objectDimensionData: objectDimensionData)
                 } label: {
                     VStack {
                         ZStack {
@@ -57,7 +59,7 @@ struct AllProjectView: View {
                 }
                 
                 ForEach(projects) { project in
-                    ProjectBoxView(project: project)
+                    ProjectBoxView(project: project, objectDimensionData: objectDimensionData)
                         .padding()
                         .contextMenu(ContextMenu(menuItems: {
                             Button(action: {
@@ -135,10 +137,11 @@ struct ProjectBoxView: View {
     }
     
     var project: Project
+    @ObservedObject var objectDimensionData: ObjectDimensionData
     
     var body: some View {
         NavigationLink {
-            LoadProjectSceneView(project: project, sceneView: ScenekitView(loadSceneBool: true, loadedProject: project.data))
+            LoadProjectSceneView(project: project, sceneView: ScenekitView(loadSceneBool: true, loadedProject: project.data, objectDimensionData: objectDimensionData), objectDimensionData: objectDimensionData)
         } label: {
             VStack {
                 ZStack {
@@ -157,7 +160,7 @@ struct ProjectBoxView: View {
         }
     }
 }
-
-#Preview {
-    AllProjectView()
-}
+//
+//#Preview {
+//    AllProjectView()
+//}

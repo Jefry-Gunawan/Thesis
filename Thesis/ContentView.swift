@@ -12,6 +12,9 @@ struct ContentView: View {
     @State private var ARTapped = false
     let buttonGradient = LinearGradient(gradient: Gradient(colors: [.blueButton, .black.opacity(0)]), startPoint: .leading, endPoint: .trailing)
     
+    @State var objectDimensionData = ObjectDimensionData()
+    @State var arObjectDimensionData = ObjectDimensionData()
+    
     var body: some View {
         GeometryReader{ geometry in
             NavigationStack {
@@ -123,7 +126,7 @@ struct ContentView: View {
                             .ignoresSafeArea()
                             
                             if self.menuSelected == 1 {
-                                AllProjectView()
+                                AllProjectView(objectDimensionData: objectDimensionData)
                             } else if self.menuSelected == 2 {
                                 AllCollectionView()
                             }
@@ -144,7 +147,7 @@ struct ContentView: View {
             }
             .ignoresSafeArea()
             .fullScreenCover(isPresented: $ARTapped, content: {
-                ARPageView()
+                ARPageView(arView: ARViewContainer(objectDimensionData: arObjectDimensionData), objectDimensionData: arObjectDimensionData)
             })
             .onAppear {
                 AppDelegate.orientationLock = .landscape

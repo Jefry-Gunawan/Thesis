@@ -30,6 +30,8 @@ struct LoadFloatingButtonView: View {
     var actionShare: () -> Void
     @State var itemCollectionOpened: Bool = false
     
+    @ObservedObject var objectDimensionData: ObjectDimensionData
+    
     var body: some View {
         VStack {
             HStack {
@@ -63,47 +65,66 @@ struct LoadFloatingButtonView: View {
                 }
                 .frame(width: 300, height: 50)
                 
-                // Dimension Data
-                ZStack {
-                    RoundedRectangle(cornerRadius: 10)
+                // DImension Data
+                if objectDimensionData.name != nil {
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 10)
+                            .frame(maxWidth: .infinity, maxHeight: 50)
+                            .foregroundStyle(.regularMaterial)
+                        HStack {
+                            HStack {
+                                Text("W :")
+                                ZStack {
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .frame(maxWidth: .infinity, maxHeight: 40)
+                                        .foregroundStyle(.regularMaterial)
+                                    Text("\(objectDimensionData.width ?? "--")")
+                                }
+                            }
+                            .padding(.horizontal)
+                            
+                            Spacer()
+                            
+                            HStack {
+                                Text("L :")
+                                ZStack {
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .frame(maxWidth: .infinity, maxHeight: 40)
+                                        .foregroundStyle(.regularMaterial)
+                                    Text("\(objectDimensionData.length ?? "--")")
+                                }
+                            }
+                            .padding(.horizontal)
+                            
+                            Spacer()
+                            
+                            HStack {
+                                Text("H :")
+                                ZStack {
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .frame(maxWidth: .infinity, maxHeight: 40)
+                                        .foregroundStyle(.regularMaterial)
+                                    Text("\(objectDimensionData.height ?? "--")")
+                                }
+                            }
+                            .padding(.horizontal)
+                        }
                         .frame(maxWidth: .infinity, maxHeight: 50)
-                        .foregroundStyle(.regularMaterial)
-                    HStack {
-                        HStack {
-                            Text("W :")
-                            ZStack {
-                                RoundedRectangle(cornerRadius: 10)
-                                    .frame(maxWidth: .infinity, maxHeight: 45)
-                                    .foregroundStyle(.regularMaterial)
-                            }
-                        }
-                        .padding()
-                        
-                        Spacer()
-                        
-                        HStack {
-                            Text("L :")
-                            ZStack {
-                                RoundedRectangle(cornerRadius: 10)
-                                    .frame(maxWidth: .infinity, maxHeight: 45)
-                                    .foregroundStyle(.regularMaterial)
-                            }
-                        }
-                        .padding()
-                        
-                        Spacer()
-                        
-                        HStack {
-                            Text("H :")
-                            ZStack {
-                                RoundedRectangle(cornerRadius: 10)
-                                    .frame(maxWidth: .infinity, maxHeight: 45)
-                                    .foregroundStyle(.regularMaterial)
-                            }
-                        }
-                        .padding()
                     }
-                    .frame(maxWidth: .infinity, maxHeight: 50)
+                    // Remove Button
+                    Button {
+                        activeScene.removeNode()
+                    } label: {
+                        ZStack {
+                            RoundedRectangle(cornerRadius: 10)
+                                .frame(width: 50, height: 50)
+                                .foregroundStyle(.regularMaterial)
+                            Image(systemName: "trash")
+                                .foregroundStyle(.white)
+                        }
+                    }
+                } else {
+                    Spacer()
                 }
                 
                 ZStack {
