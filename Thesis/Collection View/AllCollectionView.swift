@@ -17,6 +17,10 @@ struct AllCollectionView: View {
     @State private var selectedCollection: ItemCollection = ItemCollection(id: UUID(), name: "", data: Data(), dataURL: "", snapshotItem: Data())
     @State private var ARTapped = false
     
+    @State private var importSheet = false
+    @State private var importPreview = false
+    @State private var usdzURL: URL?
+    
     // For Light Mode & Dark Mode support
     @Environment(\.colorScheme) var colorScheme
     var textColor: Color {
@@ -32,7 +36,7 @@ struct AllCollectionView: View {
             LazyVGrid(columns: columns, content: {
                 // Button for New Project
                 Button {
-                    
+                    self.importSheet.toggle()
                 } label: {
                     VStack {
                         ZStack {
@@ -73,6 +77,12 @@ struct AllCollectionView: View {
             TextField("Untitled", text: $collectionName)
             Button("OK", action: renameCollection)
             Button("Cancel", role: .cancel) { }
+        }
+        .sheet(isPresented: $importSheet) {
+            DocumentPicker(importSheet: $importSheet, importPreview: $importPreview, usdzURL: $usdzURL)
+        }
+        .fullScreenCover(isPresented: $importPreview) {
+            ImportedView(usdzURL: $usdzURL)
         }
     }
     

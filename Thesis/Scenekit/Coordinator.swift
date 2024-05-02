@@ -53,8 +53,8 @@ class Coordinator: NSObject, UIGestureRecognizerDelegate {
                 
                 parent.objectDimensionData.name = result.node.name ?? "Untitled"
                 parent.objectDimensionData.width = String(format: "%.2f", xFloat)
-                parent.objectDimensionData.length = String(format: "%.2f", yFloat)
-                parent.objectDimensionData.height = String(format: "%.2f", zFloat)
+                parent.objectDimensionData.height = String(format: "%.2f", yFloat)
+                parent.objectDimensionData.length = String(format: "%.2f", zFloat)
                 
                 parent.moveNodeModel.moveNode.worldPosition = result.node.worldPosition
                 parent.moveNodeModel.moveNode.isHidden = false

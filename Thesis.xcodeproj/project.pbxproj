@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		9407C20F2B7A4700005B0B98 /* CapturedObjectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9407C20E2B7A4700005B0B98 /* CapturedObjectView.swift */; };
 		9407C2112B7A473A005B0B98 /* CapturedSceneKitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9407C2102B7A473A005B0B98 /* CapturedSceneKitView.swift */; };
-		94208F122B98532F0048CD0D /* ARSCNViewContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94208F112B98532F0048CD0D /* ARSCNViewContainer.swift */; };
 		9426DA962B73DBD600E1D2D5 /* AllProjectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9426DA952B73DBD600E1D2D5 /* AllProjectView.swift */; };
 		9435DB2D2B80D7ED00CFE678 /* MoveNodeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9435DB2C2B80D7ED00CFE678 /* MoveNodeModel.swift */; };
 		9443784B2BD25ADC0084A71C /* AllCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9443784A2BD25ADC0084A71C /* AllCollectionView.swift */; };
@@ -19,6 +18,7 @@
 		9469A4F92B68DEEE00E807A8 /* NewProjectSceneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9469A4F82B68DEEE00E807A8 /* NewProjectSceneView.swift */; };
 		9469A4FB2B68DF4C00E807A8 /* ScenekitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9469A4FA2B68DF4C00E807A8 /* ScenekitView.swift */; };
 		946D342E2BE216E0005BD8DB /* DocumentPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 946D342D2BE216E0005BD8DB /* DocumentPicker.swift */; };
+		946D34302BE21BB7005BD8DB /* ImportedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 946D342F2BE21BB7005BD8DB /* ImportedView.swift */; };
 		9470CD732B70A28600FF1EE1 /* Coordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9470CD722B70A28600FF1EE1 /* Coordinator.swift */; };
 		9470CD752B70B4CD00FF1EE1 /* ExportUSDZ.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9470CD742B70B4CD00FF1EE1 /* ExportUSDZ.swift */; };
 		947323BA2B75E31C007BA78A /* LoadProjectSceneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 947323B92B75E31C007BA78A /* LoadProjectSceneView.swift */; };
@@ -77,7 +77,6 @@
 /* Begin PBXFileReference section */
 		9407C20E2B7A4700005B0B98 /* CapturedObjectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CapturedObjectView.swift; sourceTree = "<group>"; };
 		9407C2102B7A473A005B0B98 /* CapturedSceneKitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CapturedSceneKitView.swift; sourceTree = "<group>"; };
-		94208F112B98532F0048CD0D /* ARSCNViewContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARSCNViewContainer.swift; sourceTree = "<group>"; };
 		9426DA952B73DBD600E1D2D5 /* AllProjectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllProjectView.swift; sourceTree = "<group>"; };
 		9435DB2C2B80D7ED00CFE678 /* MoveNodeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoveNodeModel.swift; sourceTree = "<group>"; };
 		9443784A2BD25ADC0084A71C /* AllCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllCollectionView.swift; sourceTree = "<group>"; };
@@ -87,6 +86,7 @@
 		9469A4F82B68DEEE00E807A8 /* NewProjectSceneView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewProjectSceneView.swift; sourceTree = "<group>"; };
 		9469A4FA2B68DF4C00E807A8 /* ScenekitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScenekitView.swift; sourceTree = "<group>"; };
 		946D342D2BE216E0005BD8DB /* DocumentPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentPicker.swift; sourceTree = "<group>"; };
+		946D342F2BE21BB7005BD8DB /* ImportedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportedView.swift; sourceTree = "<group>"; };
 		9470CD722B70A28600FF1EE1 /* Coordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coordinator.swift; sourceTree = "<group>"; };
 		9470CD742B70B4CD00FF1EE1 /* ExportUSDZ.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportUSDZ.swift; sourceTree = "<group>"; };
 		947323B92B75E31C007BA78A /* LoadProjectSceneView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadProjectSceneView.swift; sourceTree = "<group>"; };
@@ -170,6 +170,7 @@
 				9443784A2BD25ADC0084A71C /* AllCollectionView.swift */,
 				94675BBE2BD3F7E2000CF5C4 /* CollectionSceneView.swift */,
 				946D342D2BE216E0005BD8DB /* DocumentPicker.swift */,
+				946D342F2BE21BB7005BD8DB /* ImportedView.swift */,
 			);
 			path = "Collection View";
 			sourceTree = "<group>";
@@ -256,7 +257,6 @@
 			isa = PBXGroup;
 			children = (
 				94A480972B8F25FB0095AA04 /* ARViewContainer.swift */,
-				94208F112B98532F0048CD0D /* ARSCNViewContainer.swift */,
 				94A480992B8F285A0095AA04 /* ARPageView.swift */,
 				947552682B9080E400ED3E41 /* ARFloatingMenu.swift */,
 				9475526A2B9081D000ED3E41 /* ARItemCollectionView.swift */,
@@ -419,6 +419,7 @@
 				949E57D12B78A80900BCEA1A /* OnboardingTutorialView+LocalizedString.swift in Sources */,
 				9407C20F2B7A4700005B0B98 /* CapturedObjectView.swift in Sources */,
 				9467F89F2BB6ECF0009AEB77 /* ContentView.swift in Sources */,
+				946D34302BE21BB7005BD8DB /* ImportedView.swift in Sources */,
 				94BDA8872B68D62400351056 /* Item.swift in Sources */,
 				94E4D6122BD69D160043FA67 /* ObjectDimensionData.swift in Sources */,
 				949E57ED2B78A80900BCEA1A /* CaptureFolderManager.swift in Sources */,
@@ -437,7 +438,6 @@
 				94BDA8832B68D62400351056 /* ThesisApp.swift in Sources */,
 				949E57CD2B78A80900BCEA1A /* TimedMessageList.swift in Sources */,
 				949E57EB2B78A80900BCEA1A /* CapturePrimaryView.swift in Sources */,
-				94208F122B98532F0048CD0D /* ARSCNViewContainer.swift in Sources */,
 				947323BD2B75EBAA007BA78A /* LoadFloatingButtonView.swift in Sources */,
 				9443784D2BD25F7A0084A71C /* CollectionSceneKitView.swift in Sources */,
 				94675BBF2BD3F7E2000CF5C4 /* CollectionSceneView.swift in Sources */,

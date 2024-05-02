@@ -184,7 +184,7 @@ struct LoadFloatingButtonView: View {
             .padding()
             
             if itemCollectionOpened {
-                ItemCollectionView(activeScene: $activeScene)
+                ItemCollectionView(activeScene: $activeScene, itemCollectionOpened: $itemCollectionOpened)
                     .padding(.horizontal)
             }
             

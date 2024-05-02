@@ -1,17 +1,10 @@
-//
-//  CapturedObjectView.swift
-//  Thesis
-//
-//  Created by Jefry Gunawan on 12/02/24.
-//
-
 #if !targetEnvironment(simulator) && !targetEnvironment(macCatalyst)
 import SwiftUI
 import SwiftData
 import SceneKit
 import RealityKit
 
-struct CapturedObjectView: View {
+struct ImportedView: View {
     @Environment(\.modelContext) private var modelContext
     
     @Environment(\.colorScheme) var colorScheme
@@ -28,9 +21,8 @@ struct CapturedObjectView: View {
     @State private var fileName = ""
     @State private var isAlertPresented = false
     
-    @State var sceneView: CapturedSceneKitView
-    var usdzURL: URL
-    let endCaptureCallback: () -> Void
+    @State var sceneView: CapturedSceneKitView?
+    @Binding var usdzURL: URL?
     
     var body: some View {
         ZStack {
@@ -72,21 +64,43 @@ struct CapturedObjectView: View {
             Button("OK", action: saveToSwiftData)
             Button("Cancel", role: .cancel) { }
         }
-    .onDisappear {
-            endCaptureCallback()
+        .onAppear {
+            self.sceneView = CapturedSceneKitView(usdzURL: self.usdzURL!)
+        }
+        .onDisappear {
+            deleteFileFromTemporaryStorage()
+        }
+    }
+    
+    func deleteFileFromTemporaryStorage() {
+        let fileManager = FileManager.default
+
+        if usdzURL != nil {
+            do {
+                // Check if the file exists
+                if fileManager.fileExists(atPath: usdzURL!.path) {
+                    // Attempt to remove the file
+                    try fileManager.removeItem(at: usdzURL!)
+                    print("File deleted successfully.")
+                } else {
+                    print("File does not exist at path: \(usdzURL!.path)")
+                }
+            } catch {
+                print("Error deleting file: \(error.localizedDescription)")
+            }
         }
     }
     
     func saveToSwiftData() {
         // Coba simpan Nodenya
         var nodeData: Data? = nil
-        if let modelasset = try? SCNScene(url: usdzURL), let modelNode = modelasset.rootNode.childNodes.first?.clone() {
+        if let modelasset = try? SCNScene(url: usdzURL!), let modelNode = modelasset.rootNode.childNodes.first?.clone() {
             nodeData = try! NSKeyedArchiver.archivedData(withRootObject: modelNode, requiringSecureCoding: true)
         }
         
-        let dataURL = moveFileToPersistentStorage(temporaryURL: usdzURL)
+        let dataURL = moveFileToPersistentStorage(temporaryURL: usdzURL!)
         
-        let snapImage = sceneView.view.snapshot()
+        let snapImage = sceneView!.view.snapshot()
         
         let imageData = snapImage.pngData() ?? Data()
         

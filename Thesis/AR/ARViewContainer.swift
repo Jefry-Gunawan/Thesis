@@ -53,7 +53,7 @@ struct ARViewContainer: UIViewRepresentable {
         for tempEntity in anchor.children {
             if let modelEntity = tempEntity as? ModelEntity {
                 if modelEntity.components[CollisionComponent.self] is CollisionComponent {
-                    view.installGestures(for: modelEntity)
+                    view.installGestures([.translation, .rotation], for: modelEntity)
                 }
             }
         }
@@ -103,11 +103,9 @@ struct ARViewContainer: UIViewRepresentable {
     
                     // To add movement gesture
                     for tempEntity in anchor.children {
-                        print("temp \(tempEntity)")
                         if let modelEntity = tempEntity as? ModelEntity {
                             if modelEntity.components[CollisionComponent.self] is CollisionComponent {
-                                print("aAa \(modelEntity)")
-                                view.installGestures(for: modelEntity)
+                                view.installGestures([.translation, .rotation], for: modelEntity)
                             }
                         }
                     }
@@ -148,10 +146,14 @@ struct ARViewContainer: UIViewRepresentable {
                 parent.objectDimensionData.selectedEntity = result
                 print("Hit entity found:", result.name)
                 
-                let width = (result.visualBounds(relativeTo: nil).max.x) - (result.visualBounds(relativeTo: nil).min.x)
-                let height = (result.visualBounds(relativeTo: nil).max.y) - (result.visualBounds(relativeTo: nil).min.y)
-                let length = (result.visualBounds(relativeTo: nil).max.z) - (result.visualBounds(relativeTo: nil).min.z)
-//                
+                let temp = result.clone(recursive: true)
+                temp.transform.rotation = simd_quatf(real: 0, imag: SIMD3<Float>(0, 0, 0))
+                
+                let size = temp.visualBounds(relativeTo: nil)
+                let width = size.extents.x
+                let height = size.extents.y
+                let length = size.extents.z
+                
                 parent.objectDimensionData.name = result.name
                 
                 parent.objectDimensionData.width = String(format: "%.2f", width)

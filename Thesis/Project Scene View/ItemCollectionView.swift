@@ -26,6 +26,7 @@ struct ItemCollectionView: View {
     ]
     
     @Binding var activeScene: ScenekitView
+    @Binding var itemCollectionOpened: Bool
     
     var body: some View {
         HStack {
@@ -38,7 +39,7 @@ struct ItemCollectionView: View {
                 ScrollView {
                     LazyVGrid(columns: columns, content: {
                         ForEach(items) { item in
-                            ItemBoxView(item: item, activeScene: $activeScene)
+                            ItemBoxView(item: item, activeScene: $activeScene, itemCollectionOpened: $itemCollectionOpened)
                                 .contextMenu(ContextMenu(menuItems: {
                                     Button(action: {
                                         isAlertPresented.toggle()
@@ -47,11 +48,6 @@ struct ItemCollectionView: View {
                                     }, label: {
                                         Text("Rename")
                                     })
-//                                    Button(action: {
-//                                        deleteItem(selectedItem: item)
-//                                    }, label: {
-//                                        Text("Delete")
-//                                    })
                                     Button(role: .destructive) {
                                         deleteItem(selectedItem: item)
                                     } label: {
@@ -96,6 +92,7 @@ struct ItemBoxView: View {
     @Environment(\.colorScheme) var colorScheme
     var item: ItemCollection
     @Binding var activeScene: ScenekitView
+    @Binding var itemCollectionOpened: Bool
 
     var textColor: Color {
         if colorScheme == .dark {
@@ -109,6 +106,7 @@ struct ItemBoxView: View {
         Button {
             if let loadedNode = try! NSKeyedUnarchiver.unarchivedObject(ofClass: SCNNode.self, from: item.data) {
                 activeScene.view.scene?.rootNode.addChildNode(loadedNode)
+                itemCollectionOpened = false
             }
         } label: {
             VStack {

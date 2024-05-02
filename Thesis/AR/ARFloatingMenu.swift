@@ -166,7 +166,7 @@ struct ARFloatingMenu: View {
             .padding()
 #if !targetEnvironment(simulator) && !targetEnvironment(macCatalyst)
             if itemCollectionOpened {
-                ARItemCollectionView(activeARView: $activeARView)
+                ARItemCollectionView(activeARView: $activeARView, itemCollectionOpened: $itemCollectionOpened)
                     .padding(.horizontal)
             }
 #endif

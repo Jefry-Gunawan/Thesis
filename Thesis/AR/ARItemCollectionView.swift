@@ -27,6 +27,7 @@ struct ARItemCollectionView: View {
     ]
     
     @Binding var activeARView: ARViewContainer
+    @Binding var itemCollectionOpened: Bool
     
     var body: some View {
         HStack {
@@ -39,7 +40,7 @@ struct ARItemCollectionView: View {
                 ScrollView {
                     LazyVGrid(columns: columns, content: {
                         ForEach(items) { item in
-                            ARItemBoxView(item: item, activeARView: $activeARView)
+                            ARItemBoxView(item: item, activeARView: $activeARView, itemCollectionOpened: $itemCollectionOpened)
                                 .contextMenu(ContextMenu(menuItems: {
                                     Button(action: {
                                         isAlertPresented.toggle()
@@ -97,6 +98,7 @@ struct ARItemBoxView: View {
     @Environment(\.colorScheme) var colorScheme
     var item: ItemCollection
     @Binding var activeARView: ARViewContainer
+    @Binding var itemCollectionOpened: Bool
 
     var textColor: Color {
         if colorScheme == .dark {
@@ -109,6 +111,7 @@ struct ARItemBoxView: View {
     var body: some View {
         Button {
             activeARView.addItem(name: item.name, dataURL: item.dataURL)
+            itemCollectionOpened = false
         } label: {
             VStack {
                 Image(uiImage: UIImage(data: item.snapshotItem)!)
