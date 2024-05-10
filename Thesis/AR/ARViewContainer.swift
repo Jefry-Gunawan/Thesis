@@ -6,8 +6,11 @@ import ARKit
 struct ARViewContainer: UIViewRepresentable {
     var view: ARView = ARView(frame: .zero)
     @State var anchor = AnchorEntity(plane: .horizontal)
+    @State var textEntity: Entity?
     
     @ObservedObject var objectDimensionData: ObjectDimensionData
+    
+    
     
     func makeUIView(context: Context) -> ARView {
 //        view.addCoaching()
@@ -43,11 +46,20 @@ struct ARViewContainer: UIViewRepresentable {
         anchor.name = "Horizontal Plane Anchor"
         anchor.generateCollisionShapes(recursive: true)
 
-       // Add the box entity to the scene
+       // Add anchor to the scene
         view.scene.anchors.append(anchor)
+        
+//        let text = MeshResource.generateText("Test", extrusionDepth: 0.0005, font: .systemFont(ofSize: 0.025), containerFrame: CGRect.zero, alignment: .center, lineBreakMode: .byTruncatingTail)
+//        let textMaterial = SimpleMaterial(color: .green, isMetallic: false)
+//        let textEntity = ModelEntity(mesh: text, materials: [textMaterial])
+//        textEntity.position = [-0.1, 0.0, 0]
+//        anchor.addChild(textEntity)
         
         let tapGesture = UITapGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.handleTap(_:)))
         view.addGestureRecognizer(tapGesture)
+        
+//        let panGesture = UIPanGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.handlePan(_:)))
+//        view.addGestureRecognizer(panGesture)
         
         // To add movement gesture
         for tempEntity in anchor.children {
@@ -58,6 +70,7 @@ struct ARViewContainer: UIViewRepresentable {
             }
         }
         
+        anchor.generateCollisionShapes(recursive: true)
         objectDimensionData.reset()
 
        return view
@@ -75,6 +88,10 @@ struct ARViewContainer: UIViewRepresentable {
         for tempEntity in uiView.scene.anchors {
             uiView.scene.anchors.remove(tempEntity)
         }
+    }
+    
+    func createMoveNode() {
+//        let coneEntity = ModelEntity(mesh: )
     }
     
     func addItem(name: String, dataURL: String) {
@@ -129,12 +146,14 @@ struct ARViewContainer: UIViewRepresentable {
     }
     
     // Coordinator
-    class Coordinator: NSObject {
+    class Coordinator: NSObject, UIGestureRecognizerDelegate {
         var parent: ARViewContainer
+        private var lastPanTranslation: CGPoint = .zero
 
         init(_ parent: ARViewContainer) {
             self.parent = parent
             super.init()
+            addPanGesture()
         }
 
         @objc func handleTap(_ gestureRecognizer: UITapGestureRecognizer) {
@@ -159,29 +178,80 @@ struct ARViewContainer: UIViewRepresentable {
                 parent.objectDimensionData.width = String(format: "%.2f", width)
                 parent.objectDimensionData.length = String(format: "%.2f", length)
                 parent.objectDimensionData.height = String(format: "%.2f", height)
+                
+                // Text
+                if parent.textEntity != nil {
+                    parent.textEntity?.removeFromParent()
+                }
+                
+                let text = MeshResource.generateText(result.name, extrusionDepth: 0.0005, font: .systemFont(ofSize: 0.25 * CGFloat(width)), containerFrame: .zero, alignment: .center, lineBreakMode: .byWordWrapping)
+                let textMaterial = SimpleMaterial(color: .green, isMetallic: false)
+                let textEntity = ModelEntity(mesh: text, materials: [textMaterial])
+//                textEntity.position = result.position(relativeTo: parent.anchor)
+                textEntity.position.y = height
+                textEntity.position.x -= width / 2
+                parent.textEntity = textEntity
+                
+                result.addChild(textEntity)
             } else {
                 print("No entity found")
+                
+                if parent.textEntity != nil {
+                    parent.textEntity?.removeFromParent()
+                }
                 
                 parent.objectDimensionData.reset()
             }
        }
+        
+        @objc func handlePan(_ gestureRecognizer: UIPanGestureRecognizer) {
+            if gestureRecognizer.numberOfTouches == 2 {
+                let translation = gestureRecognizer.translation(in: gestureRecognizer.view)
+                guard let selectedEntity = parent.objectDimensionData.selectedEntity else { return }
+                
+                // To make sure it returns to normal state. Cause for some reason statenya wont become .ended
+                if gestureRecognizer.state == .began {
+                    lastPanTranslation = .zero
+                }
+                
+                let translationDelta = (
+                    x: Float(translation.x - lastPanTranslation.x),
+                    y: Float(translation.y - lastPanTranslation.y),
+                    z: Float(translation.x - lastPanTranslation.x)
+                )
+                
+                var currentPosition = selectedEntity.position
+                
+                currentPosition.y -= translationDelta.y * 0.005
+                selectedEntity.position = currentPosition
+                print(gestureRecognizer.state.rawValue)
+
+                switch gestureRecognizer.state {
+                case .began:
+                    lastPanTranslation = translation
+                case .changed:
+                    lastPanTranslation = translation
+                default:
+                    lastPanTranslation = .zero
+                }
+            }
+        }
+        
+        func addPanGesture() {
+            let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan(_:)))
+            panGesture.delegate = self
+            parent.view.addGestureRecognizer(panGesture)
+        }
+        
+        func removePanGesture() {
+            if let gestureRecognizers = parent.view.gestureRecognizers {
+                for gesture in gestureRecognizers {
+                    if gesture is UIPanGestureRecognizer {
+                        parent.view.removeGestureRecognizer(gesture)
+                    }
+                }
+            }
+        }
     }
 }
 #endif
-
-//extension ARView: ARCoachingOverlayViewDelegate {
-//    func addCoaching() {
-//        
-//        let coachingOverlay = ARCoachingOverlayView()
-//        coachingOverlay.delegate = self
-//        coachingOverlay.session = self.session
-//        coachingOverlay.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-//        
-//        coachingOverlay.goal = .anyPlane
-//        self.addSubview(coachingOverlay)
-//    }
-//    
-//    public func coachingOverlayViewDidDeactivate(_ coachingOverlayView: ARCoachingOverlayView) {
-//        //Ready to add entities next?
-//    }
-//}

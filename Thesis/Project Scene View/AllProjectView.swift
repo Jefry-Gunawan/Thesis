@@ -63,6 +63,11 @@ struct AllProjectView: View {
                         .padding()
                         .contextMenu(ContextMenu(menuItems: {
                             Button(action: {
+                                duplicateProject(selectedProject: project)
+                            }, label: {
+                                Text("Duplicate")
+                            })
+                            Button(action: {
                                 isAlertPresented.toggle()
                                 selectedProject = project
                             }, label: {
@@ -122,6 +127,16 @@ struct AllProjectView: View {
         } catch {
             print("Failed to change name")
         }
+    }
+    
+    private func duplicateProject(selectedProject: Project) {
+        let newProject = Project(id: UUID(),
+                                 name: "\(selectedProject.name) copy",
+                                 data: selectedProject.data,
+                                 roomLength: selectedProject.roomLength,
+                                 roomWidth: selectedProject.roomWidth,
+                                 snapshotProject: selectedProject.snapshotProject)
+        modelContext.insert(newProject)
     }
 }
 

@@ -19,9 +19,6 @@ class AppDataModel: ObservableObject, Identifiable {
 
     static let instance = AppDataModel()
 
-    /// The session that manages the object capture phase.
-    ///
-    /// Set the correct folder locations for the capture session using ``scanFolderManager``.
     @Published var objectCaptureSession: ObjectCaptureSession? {
         willSet {
             detachListeners()
@@ -36,12 +33,8 @@ class AppDataModel: ObservableObject, Identifiable {
 
     static let bundleForLocalizedStrings = { return Bundle.main }()
 
-    /// The object that manages the reconstruction process of a set of images of an object into a 3D model.
-    ///
-    /// When the ``ReconstructionPrimaryView`` is active, hold the session here.
     private(set) var photogrammetrySession: PhotogrammetrySession?
 
-    /// The folder set when a new capture session starts.
     private(set) var scanFolderManager: CaptureFolderManager!
 
     @Published var messageList = TimedMessageList()
@@ -71,19 +64,10 @@ class AppDataModel: ObservableObject, Identifiable {
         return !session.feedback.contains(.objectNotFlippable)
     }
 
-    /// The error that indicates the object capture session failed.
-    ///
-    /// This error moves  ``state`` to ``ModelState/failed``.
+    // The error that indicates the object capture session failed.
+    // This error moves  ``state`` to ``ModelState/failed``.
     private(set) var error: Swift.Error?
 
-    /// A Boolean value that determines whether the view shows a preview model.
-    ///
-    /// Default value is `false`.
-    ///
-    /// Uses ``setPreviewModelState(shown:)`` to properly maintain the pause state of
-    /// the ``objectCaptureSession`` while showing the ``CapturePrimaryView``.
-    /// Alternatively, hiding the ``CapturePrimaryView`` pauses the
-    /// ``objectCaptureSession``.
     @Published private(set) var showPreviewModel = false
 
     init(objectCaptureSession: ObjectCaptureSession) {
@@ -106,20 +90,10 @@ class AppDataModel: ObservableObject, Identifiable {
         state = .ended
     }
 
-    /// Informs your app to rerun to the new capture view after recontruction and viewing.
-    ///
-    /// After reconstruction and viewing are complete, call `endCapture()` to
-    /// inform the app it can go back to the new capture view.
-    /// You can also call ``endCapture()`` after a canceled or failed
-    /// reconstruction to go back to the start screen.
     func endCapture() {
         state = .completed
     }
 
-    // This sample doesn't modify the `showPreviewModel` directly. The `CapturePrimaryView`
-    // remains on screen and blurred underneath, it doesn't pause.  So, pause
-    // the `objectCaptureSession` after showing the model and start it before
-    // dismissing the model.
     func setPreviewModelState(shown: Bool) {
         guard shown != showPreviewModel else { return }
         if shown {
@@ -171,7 +145,7 @@ class AppDataModel: ObservableObject, Identifiable {
         tasks.removeAll()
     }
 
-    /// Creates a new object capture session.
+    // Creates a new object capture session.
     private func startNewCapture() -> Bool {
         logger.log("startNewCapture() called...")
         if !ObjectCaptureSession.isSupported {
@@ -214,12 +188,6 @@ class AppDataModel: ObservableObject, Identifiable {
         state = .failed
     }
 
-    // This sample calls `startReconstruction()` from the `ReconstructionPrimaryView` asynchronous
-    // task after it's on the screen.
-    /// Moves model state from prepare to reconstruct to reconstructing
-    ///
-    /// See ``ModelState/prepareToReconstruct``
-    /// and ``ModelState/reconstructing``.
     private func startReconstruction() throws {
         logger.debug("startReconstruction() called.")
 
@@ -272,7 +240,7 @@ class AppDataModel: ObservableObject, Identifiable {
             }
         }
 
-        // Finds new feedback.
+        // Finds new feedback
         let feebackToAdd = feedback.subtracting(persistentFeedback)
         for thisFeedback in feebackToAdd {
             if let feedbackString = FeedbackMessages.getFeedbackString(for: thisFeedback) {
@@ -328,7 +296,7 @@ class AppDataModel: ObservableObject, Identifiable {
 
             case .failed:
                 logger.error("App failed state error=\(String(describing: self.error!))")
-                // Shows error screen.
+                // Shows error screen
             default:
                 break
         }

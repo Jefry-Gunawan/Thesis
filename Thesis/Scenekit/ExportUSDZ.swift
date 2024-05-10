@@ -38,7 +38,7 @@ class ExportUSDZ {
             return
         }
         
-        let usdzFileName = "model.usdz"
+        let usdzFileName = "Project Model.usdz"
         let usdzFileURL = tempDirectoryURL.appendingPathComponent(usdzFileName)
         
         // Export the node to USDZ file

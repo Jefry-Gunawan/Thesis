@@ -43,6 +43,10 @@ struct LoadFloatingButtonView: View {
                             .frame(width: 50, height: 50)
                             .foregroundStyle(.regularMaterial)
                         Button(action: {
+                            // Hide move node
+                            activeScene.moveNodeModel.moveNode.isHidden = true
+                            activeScene.objectDimensionData.reset()
+                            
                             // Saving existing project
                             self.project.data = activeScene.saveScenetoExistingProject()
                             self.project.snapshotProject = activeScene.saveSnapshot()

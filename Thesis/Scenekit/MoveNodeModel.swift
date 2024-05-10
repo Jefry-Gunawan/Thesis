@@ -14,12 +14,14 @@ class MoveNodeModel: ObservableObject {
     @Published var moveXNode: SCNNode
     @Published var moveYNode: SCNNode
     @Published var moveZNode: SCNNode
+    @Published var moveRotationNode: SCNNode
     
-    init(cameraNode: SCNNode = SCNNode(), moveNode: SCNNode = SCNNode(), moveXNode: SCNNode = SCNNode(), moveYNode: SCNNode = SCNNode(), moveZNode: SCNNode = SCNNode()) {
+    init(cameraNode: SCNNode = SCNNode(), moveNode: SCNNode = SCNNode(), moveXNode: SCNNode = SCNNode(), moveYNode: SCNNode = SCNNode(), moveZNode: SCNNode = SCNNode(), moveRotationNode: SCNNode = SCNNode()) {
         self.cameraNode = cameraNode
         self.moveNode = moveNode
         self.moveXNode = moveXNode
         self.moveYNode = moveYNode
         self.moveZNode = moveZNode
+        self.moveRotationNode = moveRotationNode
     }
 }

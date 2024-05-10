@@ -48,6 +48,10 @@ struct FloatingButtonView: View {
                             .frame(width: 50, height: 50)
                             .foregroundStyle(.regularMaterial)
                         Button(action: {
+                            // Hide move node
+                            activeScene.moveNodeModel.moveNode.isHidden = true
+                            activeScene.objectDimensionData.reset()
+                            
                             // Saving project
                             let newProject = activeScene.saveNewScene()
                             modelContext.insert(newProject)

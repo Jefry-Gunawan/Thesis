@@ -48,7 +48,7 @@ struct AllCollectionView: View {
                                 .frame(width: 120, height: 120)
                         }
                         .frame(width: 250, height: 200)
-                        Text("New Project")
+                        Text("Import")
                             .foregroundStyle(textColor)
                     }
                 }

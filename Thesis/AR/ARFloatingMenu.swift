@@ -33,8 +33,6 @@ struct ARFloatingMenu: View {
 #if !targetEnvironment(simulator) && !targetEnvironment(macCatalyst)
     @Binding var activeARView: ARViewContainer
 #endif
-//    var actionExport: () -> Void
-//    var actionShare: () -> Void
     @State var itemCollectionOpened: Bool = false
     
     @ObservedObject var objectDimensionData: ObjectDimensionData
@@ -72,7 +70,7 @@ struct ARFloatingMenu: View {
                                     RoundedRectangle(cornerRadius: 10)
                                         .frame(maxWidth: .infinity, maxHeight: 40)
                                         .foregroundStyle(.regularMaterial)
-                                    Text("\(objectDimensionData.width ?? "--")")
+                                    Text("\(objectDimensionData.width ?? "--") M")
                                 }
                             }
                             .padding(.horizontal)
@@ -85,7 +83,7 @@ struct ARFloatingMenu: View {
                                     RoundedRectangle(cornerRadius: 10)
                                         .frame(maxWidth: .infinity, maxHeight: 40)
                                         .foregroundStyle(.regularMaterial)
-                                    Text("\(objectDimensionData.length ?? "--")")
+                                    Text("\(objectDimensionData.length ?? "--") M")
                                 }
                             }
                             .padding(.horizontal)
@@ -98,7 +96,7 @@ struct ARFloatingMenu: View {
                                     RoundedRectangle(cornerRadius: 10)
                                         .frame(maxWidth: .infinity, maxHeight: 40)
                                         .foregroundStyle(.regularMaterial)
-                                    Text("\(objectDimensionData.height ?? "--")")
+                                    Text("\(objectDimensionData.height ?? "--") M")
                                 }
                             }
                             .padding(.horizontal)

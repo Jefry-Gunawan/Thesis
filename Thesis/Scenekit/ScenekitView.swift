@@ -109,8 +109,8 @@ struct ScenekitView: UIViewRepresentable {
         
         let floor = SCNFloor()
         floor.firstMaterial?.diffuse.contents = UIColor.gray
-//        floor.width = 5
-//        floor.length = 5
+        floor.width = 5
+        floor.length = 5
         floor.reflectionFalloffEnd = 0.5
         floor.reflectivity = 0.1
         let floorNode = SCNNode(geometry: floor)
@@ -131,7 +131,7 @@ struct ScenekitView: UIViewRepresentable {
         view.scene?.rootNode.addChildNode(boxNode2)
         
         // Add Sample Room
-//        if let sampleAsset = SCNScene(named: "Sample Room.usdz"),
+//        if let sampleAsset = SCNScene(named: "Cone Y.usdz"),
 //           let sampleNode = sampleAsset.rootNode.childNodes.first?.clone() {
 //            view.scene?.rootNode.addChildNode(sampleNode)
 //        }
@@ -143,11 +143,13 @@ struct ScenekitView: UIViewRepresentable {
         let coneXGeometry = SCNCone(topRadius: 0, bottomRadius: 0.1, height: 0.2)
         let coneYGeometry = SCNCone(topRadius: 0, bottomRadius: 0.1, height: 0.2)
         let coneZGeometry = SCNCone(topRadius: 0, bottomRadius: 0.1, height: 0.2)
+        let torusRotationGeometry = SCNTorus(ringRadius: 1, pipeRadius: 0.04)
         
         // Fill nodes for X, Y, and Z axes
         let moveXNode = SCNNode(geometry: coneXGeometry)
         let moveYNode = SCNNode(geometry: coneYGeometry)
         let moveZNode = SCNNode(geometry: coneZGeometry)
+        let moveRotationNode = SCNNode(geometry: torusRotationGeometry)
         
         // Rotate cones to point along respective axes
         moveXNode.eulerAngles = SCNVector3(0, 0, -Float.pi / 2)
@@ -164,10 +166,13 @@ struct ScenekitView: UIViewRepresentable {
         moveZNode.geometry?.firstMaterial?.diffuse.contents = UIColor.blue
         moveZNode.position = SCNVector3(0, 0, 0.5)
         
+        moveRotationNode.geometry?.firstMaterial?.diffuse.contents = UIColor.white
+        
         // Change name
         moveXNode.name = "moveXNode"
         moveYNode.name = "moveYNode"
         moveZNode.name = "moveZNode"
+        moveRotationNode.name = "moveRotationNode"
         
         // create parent node biar masuknya jadi 1 node
         let moveNode = SCNNode()
@@ -175,6 +180,7 @@ struct ScenekitView: UIViewRepresentable {
         moveNode.addChildNode(moveXNode)
         moveNode.addChildNode(moveYNode)
         moveNode.addChildNode(moveZNode)
+        moveNode.addChildNode(moveRotationNode)
         
         moveXNode.renderingOrder = 1
         moveXNode.geometry?.firstMaterial?.readsFromDepthBuffer = false
@@ -190,9 +196,12 @@ struct ScenekitView: UIViewRepresentable {
         moveZNode.geometry?.firstMaterial?.readsFromDepthBuffer = false
         moveZNode.geometry?.firstMaterial?.writesToDepthBuffer = false
         moveZNode.opacity = 0.5
-//        moveNode.renderingOrder = 1
-//        moveNode.geometry?.firstMaterial?.writesToDepthBuffer = false
-//        moveNode.geometry?.firstMaterial?.readsFromDepthBuffer = false
+        
+        moveRotationNode.renderingOrder = 1
+        moveRotationNode.geometry?.firstMaterial?.readsFromDepthBuffer = false
+        moveRotationNode.geometry?.firstMaterial?.writesToDepthBuffer = false
+        moveRotationNode.opacity = 0.5
+        
         moveNode.isHidden = true
         self.view.scene?.rootNode.addChildNode(moveNode)
     }
@@ -221,6 +230,8 @@ struct ScenekitView: UIViewRepresentable {
                 moveNodeModel.moveYNode = childNode
             case "moveZNode":
                 moveNodeModel.moveZNode = childNode
+            case "moveRotationNode":
+                moveNodeModel.moveRotationNode = childNode
             default:
                 print("Move Axis Node Not Found!!")
             }

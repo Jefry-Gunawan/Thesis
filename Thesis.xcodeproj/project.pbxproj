@@ -71,6 +71,7 @@
 		94BDA8872B68D62400351056 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94BDA8862B68D62400351056 /* Item.swift */; };
 		94BDA8892B68D62600351056 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 94BDA8882B68D62600351056 /* Assets.xcassets */; };
 		94BDA88C2B68D62600351056 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 94BDA88B2B68D62600351056 /* Preview Assets.xcassets */; };
+		94E45D712BE4E2F100356FE0 /* Cone Y.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 94E45D702BE4E2F100356FE0 /* Cone Y.usdz */; };
 		94E4D6122BD69D160043FA67 /* ObjectDimensionData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94E4D6112BD69D160043FA67 /* ObjectDimensionData.swift */; };
 /* End PBXBuildFile section */
 
@@ -142,6 +143,7 @@
 		94BDA88B2B68D62600351056 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		94BDA88D2B68D62600351056 /* Thesis.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Thesis.entitlements; sourceTree = "<group>"; };
 		94BDA88E2B68D62600351056 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		94E45D702BE4E2F100356FE0 /* Cone Y.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = "Cone Y.usdz"; sourceTree = "<group>"; };
 		94E4D6112BD69D160043FA67 /* ObjectDimensionData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectDimensionData.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -294,6 +296,7 @@
 				94A480962B8F25B20095AA04 /* AR */,
 				947323BB2B75E352007BA78A /* Project Scene View */,
 				94B8D8362B7B9BD3001DC61B /* Sample Room.usdz */,
+				94E45D702BE4E2F100356FE0 /* Cone Y.usdz */,
 				94BDA8882B68D62600351056 /* Assets.xcassets */,
 				94BDA88D2B68D62600351056 /* Thesis.entitlements */,
 				94BDA88E2B68D62600351056 /* Info.plist */,
@@ -375,6 +378,7 @@
 				94BDA88C2B68D62600351056 /* Preview Assets.xcassets in Resources */,
 				949E57DA2B78A80900BCEA1A /* ScanPasses-iPhone-FixedHeight-3.mp4 in Resources */,
 				949E57DC2B78A80900BCEA1A /* ScanPasses-iPad-FixedHeight-2.mp4 in Resources */,
+				94E45D712BE4E2F100356FE0 /* Cone Y.usdz in Resources */,
 				949E57D82B78A80900BCEA1A /* ScanPasses-iPad-FixedHeight-unflippable-high.mp4 in Resources */,
 				949E57D72B78A80900BCEA1A /* ScanPasses-iPhone-FixedHeight-1.mp4 in Resources */,
 				94BDA8892B68D62600351056 /* Assets.xcassets in Resources */,

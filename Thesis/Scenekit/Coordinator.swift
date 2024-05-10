@@ -14,7 +14,7 @@ class Coordinator: NSObject, UIGestureRecognizerDelegate {
     
     private let untappableList = ["defaultFloor"]
     
-    private let moveNodeList = ["moveNode", "moveXNode", "moveYNode", "moveZNode"]
+    private let moveNodeList = ["moveNode", "moveXNode", "moveYNode", "moveZNode", "moveRotationNode"]
     
     init(parent: ScenekitView) {
         self.parent = parent
@@ -35,9 +35,13 @@ class Coordinator: NSObject, UIGestureRecognizerDelegate {
                 selectedNode = result.node
                 parent.objectDimensionData.selectedNode = result.node
                 
-                let worldBoundingBox = selectedNode!.boundingBox
-                let worldMin = selectedNode!.convertPosition(worldBoundingBox.min, to: nil)
-                let worldMax = selectedNode!.convertPosition(worldBoundingBox.max, to: nil)
+                // To get result that won't be broken by rotation thingy
+                let tempNode = selectedNode?.clone()
+                tempNode?.eulerAngles.y = 0
+                
+                let worldBoundingBox = tempNode!.boundingBox
+                let worldMin = tempNode!.convertPosition(worldBoundingBox.min, to: nil)
+                let worldMax = tempNode!.convertPosition(worldBoundingBox.max, to: nil)
                 
 //                print(String(format: "%.2f", worldMax.x - worldMin.x))
 //                print(String(format: "%.2f", worldMax.y - worldMin.y))
@@ -50,6 +54,8 @@ class Coordinator: NSObject, UIGestureRecognizerDelegate {
                 parent.moveNodeModel.moveXNode.worldPosition = SCNVector3(0.5 + xFloat/3, 0, 0)
                 parent.moveNodeModel.moveYNode.worldPosition = SCNVector3(0, 0.5 + yFloat/3, 0)
                 parent.moveNodeModel.moveZNode.worldPosition = SCNVector3(0, 0, 0.5 + zFloat/3)
+                
+                parent.moveNodeModel.moveRotationNode.scale = SCNVector3(max(0.5, xFloat * 0.75), max(0.5, yFloat * 0.75), max(0.5, zFloat * 0.75))
                 
                 parent.objectDimensionData.name = result.node.name ?? "Untitled"
                 parent.objectDimensionData.width = String(format: "%.2f", xFloat)
@@ -93,6 +99,10 @@ class Coordinator: NSObject, UIGestureRecognizerDelegate {
                         
                         parent.moveNodeModel.moveZNode.scale = SCNVector3(2, 2, 2)
                         parent.moveNodeModel.moveZNode.opacity = 1
+                    case "moveRotationNode":
+                        selectedMoveAxis = 4
+                        
+                        parent.moveNodeModel.moveRotationNode.opacity = 1
                     default:
                         selectedMoveAxis = 0
                     }
@@ -143,6 +153,9 @@ class Coordinator: NSObject, UIGestureRecognizerDelegate {
                     currentPosition.y -= translationDelta.y * 0.01
                 } else if selectedMoveAxis == 3 {
                     currentPosition.z += translationDelta.z * 0.01
+                } else if selectedMoveAxis == 4 {
+                    let rotationAngle = Float(translation.x - lastPanTranslation.x) * 0.01
+                    selectedNode.eulerAngles.y += rotationAngle
                 }
                 
                 selectedNode.worldPosition = currentPosition
@@ -190,6 +203,7 @@ class Coordinator: NSObject, UIGestureRecognizerDelegate {
         parent.moveNodeModel.moveXNode.worldPosition = SCNVector3(0.5, 0, 0)
         parent.moveNodeModel.moveYNode.worldPosition = SCNVector3(0, 0.5, 0)
         parent.moveNodeModel.moveZNode.worldPosition = SCNVector3(0, 0, 0.5)
+        parent.moveNodeModel.moveRotationNode.worldPosition = SCNVector3(0, 0, 0)
         
         resetMoveNodeEffect()
     }
@@ -202,6 +216,7 @@ class Coordinator: NSObject, UIGestureRecognizerDelegate {
         parent.moveNodeModel.moveXNode.opacity = 0.5
         parent.moveNodeModel.moveYNode.opacity = 0.5
         parent.moveNodeModel.moveZNode.opacity = 0.5
+        parent.moveNodeModel.moveRotationNode.opacity = 0.5
     }
     
     func SCNVector3MultMatrix4(_ vector: SCNVector3, _ matrix: SCNMatrix4) -> SCNVector3 {
