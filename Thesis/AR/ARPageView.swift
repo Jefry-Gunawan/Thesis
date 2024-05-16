@@ -10,13 +10,15 @@ import SwiftUI
 struct ARPageView: View {
     @State var arView: ARViewContainer
     @ObservedObject var objectDimensionData: ObjectDimensionData
+    @Binding var rulerMode: Bool
+    @Binding var rulerDistance: String?
     
     var body: some View {
         ZStack {
             arView
                 .edgesIgnoringSafeArea(.all)
             
-            ARFloatingMenu(activeARView: $arView, objectDimensionData: objectDimensionData)
+            ARFloatingMenu(activeARView: $arView, objectDimensionData: objectDimensionData, rulerMode: $rulerMode, rulerDistance: $rulerDistance)
         }
         .toolbar(.hidden)
     }

@@ -22,6 +22,7 @@ struct AllProjectView: View {
     @State private var isAlertPresented = false
     @State private var projectName = ""
     @State private var selectedProject: Project = Project(id: UUID(), name: "", data: Data(), roomLength: 0, roomWidth: 0, snapshotProject: Data())
+    
     @State private var ARTapped = false
     
     @ObservedObject var objectDimensionData: ObjectDimensionData

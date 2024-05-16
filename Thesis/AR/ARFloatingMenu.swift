@@ -37,6 +37,9 @@ struct ARFloatingMenu: View {
     
     @ObservedObject var objectDimensionData: ObjectDimensionData
     
+    @Binding var rulerMode: Bool
+    @Binding var rulerDistance: String?
+    
     var body: some View {
         VStack {
             HStack {
@@ -57,67 +60,93 @@ struct ARFloatingMenu: View {
                     }
                 })
                 
-                if objectDimensionData.name != nil {
+                if self.rulerMode {
                     // Dimension Data
                     ZStack {
                         RoundedRectangle(cornerRadius: 10)
                             .frame(maxWidth: .infinity, maxHeight: 50)
                             .foregroundStyle(.regularMaterial)
                         HStack {
+                            Spacer()
+                            
                             HStack {
-                                Text("W :")
+                                Text("Distance :")
                                 ZStack {
                                     RoundedRectangle(cornerRadius: 10)
                                         .frame(maxWidth: .infinity, maxHeight: 40)
                                         .foregroundStyle(.regularMaterial)
-                                    Text("\(objectDimensionData.width ?? "--") M")
+                                    Text("\(rulerDistance ?? "--") M")
                                 }
                             }
                             .padding(.horizontal)
                             
                             Spacer()
-                            
-                            HStack {
-                                Text("L :")
-                                ZStack {
-                                    RoundedRectangle(cornerRadius: 10)
-                                        .frame(maxWidth: .infinity, maxHeight: 40)
-                                        .foregroundStyle(.regularMaterial)
-                                    Text("\(objectDimensionData.length ?? "--") M")
-                                }
-                            }
-                            .padding(.horizontal)
-                            
-                            Spacer()
-                            
-                            HStack {
-                                Text("H :")
-                                ZStack {
-                                    RoundedRectangle(cornerRadius: 10)
-                                        .frame(maxWidth: .infinity, maxHeight: 40)
-                                        .foregroundStyle(.regularMaterial)
-                                    Text("\(objectDimensionData.height ?? "--") M")
-                                }
-                            }
-                            .padding(.horizontal)
                         }
                         .frame(maxWidth: .infinity, maxHeight: 50)
                     }
-                    
-                    // Remove Button
-                    Button {
-                        activeARView.removeEntity()
-                    } label: {
+                } else {
+                    if objectDimensionData.name != nil {
+                        // Dimension Data
                         ZStack {
                             RoundedRectangle(cornerRadius: 10)
-                                .frame(width: 50, height: 50)
+                                .frame(maxWidth: .infinity, maxHeight: 50)
                                 .foregroundStyle(.regularMaterial)
-                            Image(systemName: "trash")
-                                .foregroundStyle(.white)
+                            HStack {
+                                HStack {
+                                    Text("W :")
+                                    ZStack {
+                                        RoundedRectangle(cornerRadius: 10)
+                                            .frame(maxWidth: .infinity, maxHeight: 40)
+                                            .foregroundStyle(.regularMaterial)
+                                        Text("\(objectDimensionData.width ?? "--") M")
+                                    }
+                                }
+                                .padding(.horizontal)
+                                
+                                Spacer()
+                                
+                                HStack {
+                                    Text("L :")
+                                    ZStack {
+                                        RoundedRectangle(cornerRadius: 10)
+                                            .frame(maxWidth: .infinity, maxHeight: 40)
+                                            .foregroundStyle(.regularMaterial)
+                                        Text("\(objectDimensionData.length ?? "--") M")
+                                    }
+                                }
+                                .padding(.horizontal)
+                                
+                                Spacer()
+                                
+                                HStack {
+                                    Text("H :")
+                                    ZStack {
+                                        RoundedRectangle(cornerRadius: 10)
+                                            .frame(maxWidth: .infinity, maxHeight: 40)
+                                            .foregroundStyle(.regularMaterial)
+                                        Text("\(objectDimensionData.height ?? "--") M")
+                                    }
+                                }
+                                .padding(.horizontal)
+                            }
+                            .frame(maxWidth: .infinity, maxHeight: 50)
                         }
+                        
+                        // Remove Button
+                        Button {
+                            activeARView.removeEntity()
+                        } label: {
+                            ZStack {
+                                RoundedRectangle(cornerRadius: 10)
+                                    .frame(width: 50, height: 50)
+                                    .foregroundStyle(.regularMaterial)
+                                Image(systemName: "trash")
+                                    .foregroundStyle(.white)
+                            }
+                        }
+                    } else {
+                        Spacer()
                     }
-                } else {
-                    Spacer()
                 }
                 
                 ZStack {
@@ -151,10 +180,15 @@ struct ARFloatingMenu: View {
                         .frame(width: 50, height: 50)
                         
                         Button(action: {
-//                            actionShare()
+                            self.rulerMode.toggle()
                         }, label: {
-                            Image(systemName: "square.and.arrow.up")
-                                .foregroundStyle(textColor)
+                            if self.rulerMode {
+                                Image(systemName: "ruler")
+                                    .foregroundStyle(.blue)
+                            } else {
+                                Image(systemName: "ruler")
+                                    .foregroundStyle(textColor)
+                            }
                         })
                         .frame(width: 50, height: 50)
                     }
