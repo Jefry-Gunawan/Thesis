@@ -37,14 +37,14 @@ struct CollectionSceneKitView: UIViewRepresentable {
             let length = worldMax.z - worldMin.z
             
             objectDimensionData.name = loadedNode.name ?? "Untitled"
-            objectDimensionData.width = String(format: "%.2f", width)
-            objectDimensionData.height = String(format: "%.2f", height)
-            objectDimensionData.length = String(format: "%.2f", length)
+            objectDimensionData.width = String(format: "%.3f", width)
+            objectDimensionData.height = String(format: "%.3f", height)
+            objectDimensionData.length = String(format: "%.3f", length)
             
             view.scene?.rootNode.addChildNode(loadedNode)
         }
         
-        view.pointOfView?.localTranslate(by: SCNVector3(x: 0, y: 0, z: -1))
+//        view.pointOfView?.localTranslate(by: SCNVector3(x: 0, y: 0, z: 1))
         
         return view
     }
