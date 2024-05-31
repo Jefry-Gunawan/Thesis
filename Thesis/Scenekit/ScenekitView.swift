@@ -16,6 +16,9 @@ struct ScenekitView: UIViewRepresentable {
     var loadSceneBool: Bool
     var loadedProject: Data = Data()
     
+    @State var floorWidth: Float = 0
+    @State var floorLength: Float = 0
+    
     var scene = SCNScene()
     var view = SCNView()
     var usdzURL: URL?
@@ -109,8 +112,9 @@ struct ScenekitView: UIViewRepresentable {
         
         let floor = SCNFloor()
         floor.firstMaterial?.diffuse.contents = UIColor.gray
-        floor.width = 5
-        floor.length = 5
+        // Originally set at infinity width and length
+//        floor.width = 1
+//        floor.length = 1
         floor.reflectionFalloffEnd = 0.5
         floor.reflectivity = 0.1
         let floorNode = SCNNode(geometry: floor)
@@ -119,16 +123,16 @@ struct ScenekitView: UIViewRepresentable {
         view.scene?.rootNode.addChildNode(floorNode)
         
         // Test Box
-        let box = SCNBox(width: 1.0, height: 1.0, length: 1.0, chamferRadius: 0.1)
-        let boxNode = SCNNode(geometry: box)
-        boxNode.name = "Box 1"
-        boxNode.position = SCNVector3(x: -0.75, y: 0.5, z: 0)
-        view.scene?.rootNode.addChildNode(boxNode)
-        
-        let boxNode2 = SCNNode(geometry: box)
-        boxNode2.name = "Box 2"
-        boxNode2.position = SCNVector3(x: 0.75, y: 0.5, z: 0)
-        view.scene?.rootNode.addChildNode(boxNode2)
+//        let box = SCNBox(width: 1.0, height: 1.0, length: 1.0, chamferRadius: 0.1)
+//        let boxNode = SCNNode(geometry: box)
+//        boxNode.name = "Box 1"
+//        boxNode.position = SCNVector3(x: -0.75, y: 0.5, z: 0)
+//        view.scene?.rootNode.addChildNode(boxNode)
+//        
+//        let boxNode2 = SCNNode(geometry: box)
+//        boxNode2.name = "Box 2"
+//        boxNode2.position = SCNVector3(x: 0.75, y: 0.5, z: 0)
+//        view.scene?.rootNode.addChildNode(boxNode2)
         
         // Add Sample Room
 //        if let sampleAsset = SCNScene(named: "Cone Y.usdz"),
@@ -174,7 +178,7 @@ struct ScenekitView: UIViewRepresentable {
         moveZNode.name = "moveZNode"
         moveRotationNode.name = "moveRotationNode"
         
-        // create parent node biar masuknya jadi 1 node
+        // Create parent node biar masuknya jadi 1 node
         let moveNode = SCNNode()
         moveNode.name = "moveNode"
         moveNode.addChildNode(moveXNode)
@@ -182,6 +186,7 @@ struct ScenekitView: UIViewRepresentable {
         moveNode.addChildNode(moveZNode)
         moveNode.addChildNode(moveRotationNode)
         
+        // Make sure it won't get blocked by anything
         moveXNode.renderingOrder = 1
         moveXNode.geometry?.firstMaterial?.readsFromDepthBuffer = false
         moveXNode.geometry?.firstMaterial?.writesToDepthBuffer = false
@@ -204,6 +209,36 @@ struct ScenekitView: UIViewRepresentable {
         
         moveNode.isHidden = true
         self.view.scene?.rootNode.addChildNode(moveNode)
+    }
+    
+    // Cari SCNFloor secara recursive
+    func findFloorNode(in node: SCNNode) -> SCNFloor? {
+        if node.name == "defaultFloor" {
+            print("\(node.geometry)")
+        }
+        if let floor = node.geometry as? SCNFloor {
+            return floor
+        }
+        for child in node.childNodes {
+            if let found = findFloorNode(in: child) {
+                return found
+            }
+        }
+        return nil
+    }
+    
+    func changeFloorSize(width: Float, length: Float) {
+        if let floorNode = findFloorNode(in: scene.rootNode) {
+            floorNode.width = CGFloat(width)
+            floorNode.length = CGFloat(length)
+            
+            floorWidth = width
+            floorLength = length
+            
+            print("Floor dimension changed to \(floorWidth) x \(floorLength)")
+        } else {
+            print("Floor node not found")
+        }
     }
     
     // To fill the move node
@@ -240,12 +275,14 @@ struct ScenekitView: UIViewRepresentable {
         searchMoveNodeDone = true
     }
     
+    // Load scene from swift data
     func loadScene() {
         if let scene = try! NSKeyedUnarchiver.unarchivedObject(ofClass: SCNScene.self, from: loadedProject) {
             view.scene = scene
         }
     }
     
+    // Load item from swift data
     func loadItem(loadedItem: Data) {
         // Kalau nyimpennya pakai SCNNode
         if let loadedNode = try! NSKeyedUnarchiver.unarchivedObject(ofClass: SCNNode.self, from: loadedItem) {
@@ -253,6 +290,7 @@ struct ScenekitView: UIViewRepresentable {
         }
     }
     
+    // Delete node inside scene view
     func removeNode() {
         if objectDimensionData.selectedNode != nil {
             objectDimensionData.selectedNode?.removeFromParentNode()
@@ -261,6 +299,7 @@ struct ScenekitView: UIViewRepresentable {
         }
     }
     
+    // Create new swift data entry
     func saveNewScene() -> Project {
         // Convert SceneKit content to Data
         let sceneData = try? NSKeyedArchiver.archivedData(withRootObject: view.scene!, requiringSecureCoding: true)
@@ -271,26 +310,31 @@ struct ScenekitView: UIViewRepresentable {
         let newProject = Project(id: UUID(),
                                  name: "Project \(projectCount + 1)",
                                  data: sceneData!,
-                                 roomLength: 0,
-                                 roomWidth: 0,
+                                 roomLength: floorLength,
+                                 roomWidth: floorWidth,
                                  snapshotProject: imageData)
         
         return newProject
     }
     
+    // Return scene data only to change existing project data
     func saveScenetoExistingProject() -> Data {
         return try! NSKeyedArchiver.archivedData(withRootObject: view.scene!, requiringSecureCoding: true)
     }
     
+    // Save snapshot image
     func saveSnapshot() -> Data {
         let snapImage = view.snapshot()
         
         return snapImage.pngData() ?? Data()
     }
     
+    // Export to USDZ
+    // Selector 1 = AR View
+    // Selector 2 = Export USDZ using share sheet
     func export(selector: Int) {
         let exportUSDZ = ExportUSDZ(scene: self.view.scene!, view: self.view, usdzURL: self.usdzURL)
-        exportUSDZ.exportNodeToUSDZ(selector: selector)
+        exportUSDZ.exportNodeToUSDZ(selector: selector, name: nil)
     }
 }
 

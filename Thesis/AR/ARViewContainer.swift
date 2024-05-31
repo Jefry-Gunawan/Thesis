@@ -4,7 +4,7 @@ import RealityKit
 import ARKit
 
 struct ARViewContainer: UIViewRepresentable {
-    var view: ARView = ARView(frame: .zero)
+    var view: ARView = ARView(frame: .zero, cameraMode: .ar, automaticallyConfigureSession: true)
     @State var anchor = AnchorEntity(plane: .horizontal)
     @State var textEntity: Entity?
     
@@ -18,7 +18,7 @@ struct ARViewContainer: UIViewRepresentable {
     func makeUIView(context: Context) -> ARView {
 //        view.addCoaching()
         
-        // Enable horizontal plane detection
+        // Enable horizontal plane detection and lighting
         let config = ARWorldTrackingConfiguration()
         config.planeDetection = [.horizontal, .vertical]
         config.environmentTexturing = .automatic
@@ -27,42 +27,36 @@ struct ARViewContainer: UIViewRepresentable {
             config.sceneReconstruction = .meshWithClassification
         }
         
-        view.session.run(config)
-
-       // Create a box entity
-        let box = MeshResource.generateBox(size: 0.1, cornerRadius: 0.01)
-
-       // Create a material for the box
-        let material = SimpleMaterial(color: .red, isMetallic: false)
-
-       // Create a model entity with the box and material
-//        let boxEntity = ModelEntity(mesh: box, materials: [material])
-//        boxEntity.position = SIMD3(x: -0.1, y: 0, z: 0)
-//        boxEntity.name = "Test Cube 1"
-//        
-//        let boxEntity2 = ModelEntity(mesh: box, materials: [material])
-//        boxEntity2.position = SIMD3(x: 0.1, y: 0, z: 0)
-//        boxEntity2.name = "Test Cube 2"
-
-//        anchor.addChild(boxEntity)
-//        anchor.addChild(boxEntity2)
+        config.isLightEstimationEnabled = true
         
+        view.session.run(config)
+        
+        // Create realistic lighting
+        view.environment.sceneUnderstanding.options.insert(.occlusion)
+        view.environment.sceneUnderstanding.options.insert(.receivesLighting)
+        
+        // Add a directional light to the scene
+        let directionalLight = DirectionalLight()
+        directionalLight.light.color = .white
+        directionalLight.light.intensity = 3000
+        directionalLight.look(at: [0, 0, -1], from: [0, 10, 10], relativeTo: nil)
+
+        let lightAnchor = AnchorEntity(world: [0, 10, 10])
+        lightAnchor.addChild(directionalLight)
+        
+        view.scene.addAnchor(lightAnchor)
+        
+        // Create anchor for object
         anchor.name = "Horizontal Plane Anchor"
         anchor.generateCollisionShapes(recursive: true)
 
        // Add anchor to the scene
         view.scene.anchors.append(anchor)
         
-//        let text = MeshResource.generateText("Test", extrusionDepth: 0.0005, font: .systemFont(ofSize: 0.025), containerFrame: CGRect.zero, alignment: .center, lineBreakMode: .byTruncatingTail)
-//        let textMaterial = SimpleMaterial(color: .green, isMetallic: false)
-//        let textEntity = ModelEntity(mesh: text, materials: [textMaterial])
-//        textEntity.position = [-0.1, 0.0, 0]
-//        anchor.addChild(textEntity)
-        
         let tapGesture = UITapGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.handleTap(_:)))
         view.addGestureRecognizer(tapGesture)
         
-        // To add movement gesture
+        // To add basic movement gesture to each object
         for tempEntity in anchor.children {
             if let modelEntity = tempEntity as? ModelEntity {
                 if modelEntity.components[CollisionComponent.self] is CollisionComponent {
@@ -71,6 +65,7 @@ struct ARViewContainer: UIViewRepresentable {
             }
         }
         
+        // Give object collision so it becomes tappable
         anchor.generateCollisionShapes(recursive: true)
         objectDimensionData.reset()
 
@@ -97,6 +92,8 @@ struct ARViewContainer: UIViewRepresentable {
         }
     }
     
+    // Find Model entity from newly added item recursively
+    // Different item = different USDZ = different hierarchy. Thats why it needs to be searched recursively
     func findModelEntities(in entity: Entity) -> [ModelEntity] {
         var modelEntities: [ModelEntity] = []
         
@@ -114,6 +111,7 @@ struct ARViewContainer: UIViewRepresentable {
         return modelEntities
     }
     
+    // Add new item
     func addItem(name: String, dataURL: String) {
         let fileManager = FileManager.default
             do {
@@ -131,6 +129,7 @@ struct ARViewContainer: UIViewRepresentable {
                     // Cari yang model entity secara recursive
                     let modelEntities = findModelEntities(in: item)
                                
+                    // Give basic movement gesture
                     for modelEntity in modelEntities {
                         modelEntity.name = name
                        
@@ -139,25 +138,6 @@ struct ARViewContainer: UIViewRepresentable {
                        
                         view.installGestures([.translation, .rotation], for: modelEntity)
                     }
-                    
-//                    // Buat ngambil dari object capture karena namanya selalu mesh
-//                    if let model = item.findEntity(named: "Mesh") {
-//                        item = model
-//                    }
-//
-//                    item.name = name
-//    
-//                    anchor.addChild(item)
-//                    anchor.generateCollisionShapes(recursive: true)
-//    
-//                    // To add movement gesture
-//                    for tempEntity in anchor.children {
-//                        if let modelEntity = tempEntity as? ModelEntity {
-//                            if modelEntity.components[CollisionComponent.self] is CollisionComponent {
-//                                view.installGestures([.translation, .rotation], for: modelEntity)
-//                            }
-//                        }
-//                    }
                 } else {
                     print("File does not exist at URL: \(fileURL)")
                 }
@@ -170,6 +150,17 @@ struct ARViewContainer: UIViewRepresentable {
         if (self.objectDimensionData.selectedEntity != nil) {
             self.anchor.removeChild(self.objectDimensionData.selectedEntity!)
             self.objectDimensionData.reset()
+        }
+    }
+    
+    // Take a photo function
+    func takesnapshot() {
+        view.snapshot(saveToHDR: false) { (image) in
+          
+          // Compress the image
+          let compressedImage = UIImage(data: (image?.pngData())!)
+          // Save in the photo album
+          UIImageWriteToSavedPhotosAlbum(compressedImage!, nil, nil, nil)
         }
     }
     
@@ -192,10 +183,12 @@ struct ARViewContainer: UIViewRepresentable {
             let location = gestureRecognizer.location(in: parent.view)
             
             // If in ruler mode
+            // Basically ada 2 spheres yang akan berfungsi sebagai ujung dari sebuah penggaris
             if parent.rulerMode {
                 if let result = parent.view.raycast(from: location, allowing: .estimatedPlane, alignment: .any).first {
                     let pos = result.worldTransform
                     
+                    // Limit sphere max 2
                     if parent.rulerAnchor.count >= 2 {
                         for temp in parent.rulerAnchor {
                             temp.removeFromParent()
@@ -206,11 +199,11 @@ struct ARViewContainer: UIViewRepresentable {
                     
                     let sphereAnchor = AnchorEntity(world: pos)
                     let sphere = ModelEntity(mesh: .generateSphere(radius: 0.005), materials: [SimpleMaterial(color: .red, isMetallic: false)])
-//                    sphere.position.y = 0.01
                     sphereAnchor.addChild(sphere)
                     parent.rulerAnchor.append(sphereAnchor)
                     parent.view.scene.addAnchor(sphereAnchor)
                     
+                    // Count distances if there are 2 spheres
                     if parent.rulerAnchor.count == 2 {
                         let entity1 = parent.rulerAnchor[0]
                         let entity2 = parent.rulerAnchor[1]
@@ -220,6 +213,7 @@ struct ARViewContainer: UIViewRepresentable {
                         let distance = simd_distance(position1, position2)
                         parent.rulerDistance = String(format: "%.2f", distance)
                         
+                        // Buat garis penghubung antara 2 spheres
                         let midPosition = SIMD3<Float>(x:(position1.x + position2.x) / 2,
                                                     y:(position1.y + position2.y) / 2,
                                                     z:(position1.z + position2.z) / 2)
@@ -250,6 +244,7 @@ struct ARViewContainer: UIViewRepresentable {
             
             let hitTests = parent.view.entities(at: location)
             
+            // Select item
             if let result = hitTests.first {
                 parent.objectDimensionData.selectedEntity = result
                 print("Hit entity found:", result.name)
@@ -259,6 +254,7 @@ struct ARViewContainer: UIViewRepresentable {
                     parent.textEntity?.removeFromParent()
                 }
                 
+                // To get better dimension result (Unaffected by rotation)
                 let temp = result.clone(recursive: true)
                 temp.transform.rotation = simd_quatf(real: 0, imag: SIMD3<Float>(0, 0, 0))
                 
@@ -278,12 +274,30 @@ struct ARViewContainer: UIViewRepresentable {
                     parent.textEntity?.removeFromParent()
                 }
                 
-                let text = MeshResource.generateText(result.name, extrusionDepth: 0.0005, font: .systemFont(ofSize: 0.25 * CGFloat(width)), containerFrame: .zero, alignment: .center, lineBreakMode: .byWordWrapping)
-                let textMaterial = UnlitMaterial(color: .green)
+                // Give object name above selected object
+                let text = MeshResource.generateText(result.name, extrusionDepth: 0.0005, font: .systemFont(ofSize: max(0.015, (0.1 * CGFloat(width)))), containerFrame: .zero, alignment: .center, lineBreakMode: .byWordWrapping)
+                let textMaterial = UnlitMaterial(color: .black)
                 let textEntity = ModelEntity(mesh: text, materials: [textMaterial])
-//                textEntity.position = result.position(relativeTo: parent.anchor)
+                
+                let textSize = textEntity.visualBounds(relativeTo: nil)
+                let textWidth = textSize.extents.x
+                let textHeight = textSize.extents.y
+                
+                // Create a box entity for text field
+                let box = MeshResource.generateBox(width: textWidth * 1.1, height: textHeight * 1.4, depth: 0.0005, cornerRadius: 10)
+         
+                let material = UnlitMaterial(color: .white)
+
+                // Create a model entity with the box and material
+                let boxEntity = ModelEntity(mesh: box, materials: [material])
+                boxEntity.position = SIMD3(x: textWidth * 0.525, y: textHeight * 0.7, z: -0.00025)
+                boxEntity.name = "Text Box"
+                
+                textEntity.addChild(boxEntity)
+                
                 textEntity.position.y = height
-                textEntity.position.x -= width / 2
+                textEntity.position.x -= textWidth / 2
+                
                 parent.textEntity = textEntity
                 print(textEntity.position)
                 
@@ -299,6 +313,7 @@ struct ARViewContainer: UIViewRepresentable {
             }
        }
         
+        // Enable vertical movement by using scroll with 2 fingers
         @objc func handlePan(_ gestureRecognizer: UIPanGestureRecognizer) {
             if gestureRecognizer.numberOfTouches == 2 {
                 let translation = gestureRecognizer.translation(in: gestureRecognizer.view)

@@ -7,6 +7,10 @@ struct CollectionSceneKitView: UIViewRepresentable {
     var view = SCNView()
     var collection: ItemCollection
     
+    var usdzURL: URL?
+    
+    @ObservedObject var objectDimensionData: ObjectDimensionData
+    
     func makeUIView(context: Context) -> some UIView {
         view.scene = scene
         view.allowsCameraControl = true
@@ -20,6 +24,23 @@ struct CollectionSceneKitView: UIViewRepresentable {
         view.scene?.rootNode.addChildNode(ambientLightNode)
         
         if let loadedNode = try! NSKeyedUnarchiver.unarchivedObject(ofClass: SCNNode.self, from: collection.data) {
+            // Get dimension
+            loadedNode.eulerAngles.y = 0
+            
+            let worldBoundingBox = loadedNode.boundingBox
+            let worldMin = loadedNode.convertPosition(worldBoundingBox.min, to: nil)
+            let worldMax = loadedNode.convertPosition(worldBoundingBox.max, to: nil)
+            
+            // Get width length height
+            let width = worldMax.x - worldMin.x
+            let height = worldMax.y - worldMin.y
+            let length = worldMax.z - worldMin.z
+            
+            objectDimensionData.name = loadedNode.name ?? "Untitled"
+            objectDimensionData.width = String(format: "%.2f", width)
+            objectDimensionData.height = String(format: "%.2f", height)
+            objectDimensionData.length = String(format: "%.2f", length)
+            
             view.scene?.rootNode.addChildNode(loadedNode)
         }
         
@@ -30,5 +51,10 @@ struct CollectionSceneKitView: UIViewRepresentable {
     
     func updateUIView(_ uiView: UIViewType, context: Context) {
         
+    }
+    
+    func export(selector: Int) {
+        let exportUSDZ = ExportUSDZ(scene: self.view.scene!, view: self.view, usdzURL: self.usdzURL)
+        exportUSDZ.exportNodeToUSDZ(selector: selector, name: "\(collection.name).usdz")
     }
 }

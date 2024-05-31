@@ -7,6 +7,7 @@
 
 import SwiftUI
 import SwiftData
+import AVKit
 
 #if !targetEnvironment(simulator) && !targetEnvironment(macCatalyst)
 import RealityKit
@@ -41,169 +42,199 @@ struct ARFloatingMenu: View {
     @Binding var rulerDistance: String?
     
     var body: some View {
-        VStack {
-            HStack {
-                // Back Button
-                Button(action: {
-                    
-                }, label: {
-                    ZStack {
-                        RoundedRectangle(cornerRadius: 10)
-                            .frame(width: 50, height: 50)
-                            .foregroundStyle(.regularMaterial)
-                        Button(action: {
-                            dismiss()
-                        }, label: {
-                            Image(systemName: "chevron.left")
-                                .foregroundStyle(textColor)
-                        })
-                    }
-                })
+        ZStack {
+            // Button snapshot biar center dan bagus
+            VStack {
+                Spacer()
                 
-                if self.rulerMode {
-                    // Dimension Data
+                HStack {
+                    Spacer()
+                    
                     ZStack {
-                        RoundedRectangle(cornerRadius: 10)
-                            .frame(maxWidth: .infinity, maxHeight: 50)
-                            .foregroundStyle(.regularMaterial)
-                        HStack {
-                            Spacer()
-                            
-                            HStack {
-                                Text("Distance :")
-                                ZStack {
-                                    RoundedRectangle(cornerRadius: 10)
-                                        .frame(maxWidth: .infinity, maxHeight: 40)
-                                        .foregroundStyle(.regularMaterial)
-                                    Text("\(rulerDistance ?? "--") M")
-                                }
-                            }
-                            .padding(.horizontal)
-                            
-                            Spacer()
+                        Circle()
+                            .stroke(lineWidth: 6)
+                            .foregroundColor(.white)
+                            .frame(width: 65, height: 65)
+                        
+                        Button {
+                            activeARView.takesnapshot()
+                            AudioServicesPlaySystemSoundWithCompletion(SystemSoundID(1108), nil)
+                        } label: {
+                            Circle()
+                                .foregroundColor(.white)
+                                .frame(width: 50, height: 50)
                         }
-                        .frame(maxWidth: .infinity, maxHeight: 50)
                     }
-                } else {
-                    if objectDimensionData.name != nil {
+                }
+                .padding()
+                
+                Spacer()
+            }
+            
+            // Floating Button
+            VStack {
+                HStack {
+                    // Back Button
+                    Button(action: {
+                        
+                    }, label: {
+                        ZStack {
+                            RoundedRectangle(cornerRadius: 10)
+                                .frame(width: 50, height: 50)
+                                .foregroundStyle(.regularMaterial)
+                            Button(action: {
+                                dismiss()
+                            }, label: {
+                                Image(systemName: "chevron.left")
+                                    .foregroundStyle(textColor)
+                            })
+                        }
+                    })
+                    
+                    if self.rulerMode {
                         // Dimension Data
                         ZStack {
                             RoundedRectangle(cornerRadius: 10)
                                 .frame(maxWidth: .infinity, maxHeight: 50)
                                 .foregroundStyle(.regularMaterial)
                             HStack {
+                                Spacer()
+                                
                                 HStack {
-                                    Text("W :")
+                                    Text("Distance :")
                                     ZStack {
                                         RoundedRectangle(cornerRadius: 10)
                                             .frame(maxWidth: .infinity, maxHeight: 40)
                                             .foregroundStyle(.regularMaterial)
-                                        Text("\(objectDimensionData.width ?? "--") M")
+                                        Text("\(rulerDistance ?? "--") M")
                                     }
                                 }
                                 .padding(.horizontal)
                                 
                                 Spacer()
-                                
-                                HStack {
-                                    Text("L :")
-                                    ZStack {
-                                        RoundedRectangle(cornerRadius: 10)
-                                            .frame(maxWidth: .infinity, maxHeight: 40)
-                                            .foregroundStyle(.regularMaterial)
-                                        Text("\(objectDimensionData.length ?? "--") M")
-                                    }
-                                }
-                                .padding(.horizontal)
-                                
-                                Spacer()
-                                
-                                HStack {
-                                    Text("H :")
-                                    ZStack {
-                                        RoundedRectangle(cornerRadius: 10)
-                                            .frame(maxWidth: .infinity, maxHeight: 40)
-                                            .foregroundStyle(.regularMaterial)
-                                        Text("\(objectDimensionData.height ?? "--") M")
-                                    }
-                                }
-                                .padding(.horizontal)
                             }
                             .frame(maxWidth: .infinity, maxHeight: 50)
                         }
-                        
-                        // Remove Button
-                        Button {
-                            activeARView.removeEntity()
-                        } label: {
+                    } else {
+                        if objectDimensionData.name != nil {
+                            // Dimension Data
                             ZStack {
                                 RoundedRectangle(cornerRadius: 10)
-                                    .frame(width: 50, height: 50)
+                                    .frame(maxWidth: .infinity, maxHeight: 50)
                                     .foregroundStyle(.regularMaterial)
-                                Image(systemName: "trash")
-                                    .foregroundStyle(.white)
+                                HStack {
+                                    HStack {
+                                        Text("W :")
+                                        ZStack {
+                                            RoundedRectangle(cornerRadius: 10)
+                                                .frame(maxWidth: .infinity, maxHeight: 40)
+                                                .foregroundStyle(.regularMaterial)
+                                            Text("\(objectDimensionData.width ?? "--") M")
+                                        }
+                                    }
+                                    .padding(.horizontal)
+                                    
+                                    Spacer()
+                                    
+                                    HStack {
+                                        Text("L :")
+                                        ZStack {
+                                            RoundedRectangle(cornerRadius: 10)
+                                                .frame(maxWidth: .infinity, maxHeight: 40)
+                                                .foregroundStyle(.regularMaterial)
+                                            Text("\(objectDimensionData.length ?? "--") M")
+                                        }
+                                    }
+                                    .padding(.horizontal)
+                                    
+                                    Spacer()
+                                    
+                                    HStack {
+                                        Text("H :")
+                                        ZStack {
+                                            RoundedRectangle(cornerRadius: 10)
+                                                .frame(maxWidth: .infinity, maxHeight: 40)
+                                                .foregroundStyle(.regularMaterial)
+                                            Text("\(objectDimensionData.height ?? "--") M")
+                                        }
+                                    }
+                                    .padding(.horizontal)
+                                }
+                                .frame(maxWidth: .infinity, maxHeight: 50)
                             }
+                            
+                            // Remove Button
+                            Button {
+                                activeARView.removeEntity()
+                            } label: {
+                                ZStack {
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .frame(width: 50, height: 50)
+                                        .foregroundStyle(.regularMaterial)
+                                    Image(systemName: "trash")
+                                        .foregroundStyle(.white)
+                                }
+                            }
+                        } else {
+                            Spacer()
                         }
-                    } else {
-                        Spacer()
                     }
-                }
-                
-                ZStack {
-                    RoundedRectangle(cornerRadius: 10)
-                        .frame(width: 180, height: 50)
-                        .foregroundStyle(.regularMaterial)
-                    HStack {
-                        Button(action: {
-                            itemCollectionOpened.toggle()
-                        }, label: {
-                            Image(systemName: "chair.lounge.fill")
-                                .foregroundStyle(textColor)
-                        })
-                        .frame(width: 50, height: 50)
-                        
-                        // Object Capture
-                        Button(action: {
-                            #if !targetEnvironment(simulator) && !targetEnvironment(macCatalyst)
-                            if (ObjectCaptureSession.isSupported) {
-                                self.isObjectCaptureViewPresented = true
-                            } else {
-                                self.isNotSupported = true
-                            }
-                            #else
-                            self.isNotSupported = true
-                            #endif
-                        }, label: {
-                            Image(systemName: "viewfinder.rectangular")
-                                .foregroundStyle(textColor)
-                        })
-                        .frame(width: 50, height: 50)
-                        
-                        Button(action: {
-                            self.rulerMode.toggle()
-                        }, label: {
-                            if self.rulerMode {
-                                Image(systemName: "ruler")
-                                    .foregroundStyle(.blue)
-                            } else {
-                                Image(systemName: "ruler")
+                    
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 10)
+                            .frame(width: 180, height: 50)
+                            .foregroundStyle(.regularMaterial)
+                        HStack {
+                            Button(action: {
+                                itemCollectionOpened.toggle()
+                            }, label: {
+                                Image(systemName: "chair.lounge.fill")
                                     .foregroundStyle(textColor)
-                            }
-                        })
-                        .frame(width: 50, height: 50)
+                            })
+                            .frame(width: 50, height: 50)
+                            
+                            // Object Capture
+                            Button(action: {
+                                #if !targetEnvironment(simulator) && !targetEnvironment(macCatalyst)
+                                if (ObjectCaptureSession.isSupported) {
+                                    self.isObjectCaptureViewPresented = true
+                                } else {
+                                    self.isNotSupported = true
+                                }
+                                #else
+                                self.isNotSupported = true
+                                #endif
+                            }, label: {
+                                Image(systemName: "viewfinder.rectangular")
+                                    .foregroundStyle(textColor)
+                            })
+                            .frame(width: 50, height: 50)
+                            
+                            Button(action: {
+                                self.rulerMode.toggle()
+                            }, label: {
+                                if self.rulerMode {
+                                    Image(systemName: "ruler")
+                                        .foregroundStyle(.blue)
+                                } else {
+                                    Image(systemName: "ruler")
+                                        .foregroundStyle(textColor)
+                                }
+                            })
+                            .frame(width: 50, height: 50)
+                        }
                     }
+                    
                 }
-                
+                .padding()
+    #if !targetEnvironment(simulator) && !targetEnvironment(macCatalyst)
+                if itemCollectionOpened {
+                    ARItemCollectionView(activeARView: $activeARView, itemCollectionOpened: $itemCollectionOpened)
+                        .padding(.horizontal)
+                }
+    #endif
+                Spacer()
             }
-            .padding()
-#if !targetEnvironment(simulator) && !targetEnvironment(macCatalyst)
-            if itemCollectionOpened {
-                ARItemCollectionView(activeARView: $activeARView, itemCollectionOpened: $itemCollectionOpened)
-                    .padding(.horizontal)
-            }
-#endif
-            
-            Spacer()
         }
 #if !targetEnvironment(simulator)
         .fullScreenCover(isPresented: $isObjectCaptureViewPresented, content: {

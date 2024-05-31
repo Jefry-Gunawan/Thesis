@@ -101,14 +101,12 @@ struct CapturedObjectView: View {
         let fileManager = FileManager.default
         
         do {
-            // Get the documents directory URL
             let documentsURL = try fileManager.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
             
-            // Generate a unique file name for the file in the documents directory
             let uniqueFileName = UUID().uuidString + ".usdz"
             let destinationURL = documentsURL.appendingPathComponent(uniqueFileName)
             
-            // Move the file to the documents directory
+            // Move from temporary storage to persistent storage
             try fileManager.moveItem(at: temporaryURL, to: destinationURL)
             
             print("File moved to: \(destinationURL)")

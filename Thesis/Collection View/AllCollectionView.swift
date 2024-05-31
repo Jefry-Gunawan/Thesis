@@ -119,9 +119,11 @@ struct CollectionBoxView: View {
     
     var collection: ItemCollection
     
+    @State var objectDimensionData = ObjectDimensionData()
+    
     var body: some View {
         NavigationLink {
-            CollectionSceneView(collection: collection)
+            CollectionSceneView(scene: CollectionSceneKitView(collection: collection, objectDimensionData: self.objectDimensionData), objectDimensionData: self.objectDimensionData, name: collection.name)
         } label: {
             VStack {
                 ZStack {

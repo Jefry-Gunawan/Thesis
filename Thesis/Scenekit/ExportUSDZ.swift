@@ -17,6 +17,7 @@ class ExportUSDZ {
     var usdzURL: URL?
     
     init(scene: SCNScene, view: SCNView, usdzURL: URL? = nil) {
+        // Making sure floor and move node won't get exported
         let bannedList = ["defaultFloor", "moveNode"]
         let newScene = SCNScene()
         for childnode in scene.rootNode.childNodes {
@@ -31,15 +32,14 @@ class ExportUSDZ {
     }
     
     // 1 = AR, 2 = ShareSheet
-    func exportNodeToUSDZ(selector: Int) {
+    func exportNodeToUSDZ(selector: Int, name: String?) {
         // Create a temporary directory URL to store the USDZ file
         guard let tempDirectoryURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
             print("Error: Unable to access temporary directory.")
             return
         }
         
-        let usdzFileName = "Project Model.usdz"
-        let usdzFileURL = tempDirectoryURL.appendingPathComponent(usdzFileName)
+        let usdzFileURL = tempDirectoryURL.appendingPathComponent(name ?? "Project Model.usdz")
         
         // Export the node to USDZ file
         do {
@@ -57,24 +57,6 @@ class ExportUSDZ {
         }
     }
     
-    //    func openARViewer() {
-    //        guard let usdzURL = usdzURL else {
-    //            print("Error: USDZ URL is missing.")
-    //            return
-    //        }
-    //
-    //        let arView = ARSCNView(frame: UIScreen.main.bounds)
-    //        arView.autoenablesDefaultLighting = true
-    //        let scene = try? SCNScene(url: usdzURL)
-    //        arView.scene = scene!
-    //
-    //        let viewController = UIViewController()
-    //        viewController.view = arView
-    //
-    ////       Present the AR Viewer
-    //        UIApplication.shared.windows.first?.rootViewController?.present(viewController, animated: true, completion: nil)
-    //    }
-    
     func openARViewer() {
         let quickLookController = QLPreviewController()
         quickLookController.dataSource = self
@@ -89,6 +71,7 @@ class ExportUSDZ {
         firstWindow.rootViewController?.present(quickLookController, animated: true, completion: nil)
     }
     
+    // Open share sheet modally untuk dapat di share ke orang lain
     func shareSheet() {
         guard let usdzURL = usdzURL else {
             print("Error: USDZ URL is missing.")
@@ -108,8 +91,6 @@ class ExportUSDZ {
         
         let activityViewController = UIActivityViewController(activityItems: [usdzURL], applicationActivities: nil)
         
-        // Customize the activity view controller if needed
-//        activityViewController.popoverPresentationController?.sourceView = rootViewController.view // For iPads
         
         // Wrap the activity view controller in a navigation controller to present it modally
         let navigationController = UINavigationController(rootViewController: activityViewController)

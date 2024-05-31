@@ -84,20 +84,6 @@ struct AllProjectView: View {
             })
             
         }
-//        .padding()
-//        .navigationTitle("All Projects")
-//        .toolbar {
-//            Button {
-//                ARTapped.toggle()
-//            } label: {
-//                Text("AR")
-//            }
-//
-//            Button(action: /*@START_MENU_TOKEN@*/{}/*@END_MENU_TOKEN@*/, label: {
-//                Text("Edit")
-//            })
-//        }
-//        .navigationBarTitleDisplayMode(.large)
         .alert("New Project Name", isPresented: $isAlertPresented) {
             TextField("Untitled", text: $projectName)
             Button("OK", action: renameItem)
@@ -176,7 +162,3 @@ struct ProjectBoxView: View {
         }
     }
 }
-//
-//#Preview {
-//    AllProjectView()
-//}

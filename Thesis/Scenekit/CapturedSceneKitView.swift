@@ -30,10 +30,6 @@ struct CapturedSceneKitView: UIViewRepresentable {
         
     }
     
-//    func makeCoordinator() -> Coordinator {
-//        Coordinator(self)
-//    }
-    
     func loadScene() {
         print("URL : \(usdzURL)")
         

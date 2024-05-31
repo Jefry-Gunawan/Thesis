@@ -37,6 +37,10 @@ struct FloatingButtonView: View {
     
     @ObservedObject var objectDimensionData: ObjectDimensionData
     
+    @State private var isRoomSizeAlertPresented = false
+    @State private var newWidth: Float = 0
+    @State private var newLength: Float = 0
+    
     var body: some View {
         VStack {
             HStack {
@@ -133,6 +137,7 @@ struct FloatingButtonView: View {
                         .frame(width: 300, height: 50)
                         .foregroundStyle(.regularMaterial)
                     HStack {
+                        // Open Item Collection
                         Button(action: {
                             itemCollectionOpened.toggle()
                         }, label: {
@@ -141,7 +146,10 @@ struct FloatingButtonView: View {
                         })
                         .frame(width: 50, height: 50)
                         
-                        Button(action: {}, label: {
+                        // Change floor size
+                        Button(action: {
+                            self.isRoomSizeAlertPresented = true
+                        }, label: {
                             Image(systemName: "house.fill")
                                 .foregroundStyle(textColor)
                         })
@@ -184,6 +192,20 @@ struct FloatingButtonView: View {
                 
             }
             .padding()
+            .alert("New Project Name", isPresented: $isRoomSizeAlertPresented) {
+                TextField("Width", text: Binding(
+                    get: { String(newWidth) },
+                    set: { newWidth = Float($0) ?? 0 }
+                ))
+                TextField("Length", text: Binding(
+                    get: { String(newLength) },
+                    set: { newLength = Float($0) ?? 0 }
+                ))
+                Button("OK", action: {
+                    activeScene.changeFloorSize(width: newWidth, length: newLength)
+                })
+                Button("Cancel", role: .cancel) { }
+            }
             
             if itemCollectionOpened {
                 ItemCollectionView(activeScene: $activeScene, itemCollectionOpened: $itemCollectionOpened)

@@ -67,7 +67,6 @@
 		94A4809A2B8F285A0095AA04 /* ARPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94A480992B8F285A0095AA04 /* ARPageView.swift */; };
 		94B8D8372B7B9BD3001DC61B /* Sample Room.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 94B8D8362B7B9BD3001DC61B /* Sample Room.usdz */; };
 		94BDA8832B68D62400351056 /* ThesisApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94BDA8822B68D62400351056 /* ThesisApp.swift */; };
-		94BDA8852B68D62400351056 /* ContentViewSwiftData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94BDA8842B68D62400351056 /* ContentViewSwiftData.swift */; };
 		94BDA8872B68D62400351056 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94BDA8862B68D62400351056 /* Item.swift */; };
 		94BDA8892B68D62600351056 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 94BDA8882B68D62600351056 /* Assets.xcassets */; };
 		94BDA88C2B68D62600351056 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 94BDA88B2B68D62600351056 /* Preview Assets.xcassets */; };
@@ -137,7 +136,6 @@
 		94B8D8362B7B9BD3001DC61B /* Sample Room.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = "Sample Room.usdz"; sourceTree = "<group>"; };
 		94BDA87F2B68D62400351056 /* Thesis.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Thesis.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		94BDA8822B68D62400351056 /* ThesisApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThesisApp.swift; sourceTree = "<group>"; };
-		94BDA8842B68D62400351056 /* ContentViewSwiftData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewSwiftData.swift; sourceTree = "<group>"; };
 		94BDA8862B68D62400351056 /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
 		94BDA8882B68D62600351056 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		94BDA88B2B68D62600351056 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -288,7 +286,6 @@
 				949E57A62B78A80900BCEA1A /* Guided Capture */,
 				9426DA942B73DAE900E1D2D5 /* Model */,
 				94BDA8822B68D62400351056 /* ThesisApp.swift */,
-				94BDA8842B68D62400351056 /* ContentViewSwiftData.swift */,
 				9467F89E2BB6ECF0009AEB77 /* ContentView.swift */,
 				94E4D6112BD69D160043FA67 /* ObjectDimensionData.swift */,
 				947323BE2B75ECB9007BA78A /* Scenekit */,
@@ -401,7 +398,6 @@
 				949E57E62B78A80900BCEA1A /* FeedbackView.swift in Sources */,
 				946D342E2BE216E0005BD8DB /* DocumentPicker.swift in Sources */,
 				949E57E22B78A80900BCEA1A /* UntilProcessingCompleteFilter.swift in Sources */,
-				94BDA8852B68D62400351056 /* ContentViewSwiftData.swift in Sources */,
 				9469A4FB2B68DF4C00E807A8 /* ScenekitView.swift in Sources */,
 				949E57E12B78A80900BCEA1A /* AppDataModel+State.swift in Sources */,
 				949E57D02B78A80900BCEA1A /* OnboardingStateMachine.swift in Sources */,
@@ -587,6 +583,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Thesis/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "Need this function for AR";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "This app requires access to Photo Library to save snapshots.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -625,6 +622,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Thesis/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "Need this function for AR";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "This app requires access to Photo Library to save snapshots.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

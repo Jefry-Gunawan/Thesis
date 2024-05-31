@@ -20,8 +20,6 @@ struct DocumentPicker: UIViewControllerRepresentable {
     }
 
     func makeUIViewController(context: Context) -> UIDocumentPickerViewController {
-//        let types = [kUTTypeUniversalSceneDescription as String]
-//        let picker = UIDocumentPickerViewController(documentTypes: types, in: .import)
         let picker = UIDocumentPickerViewController(forOpeningContentTypes: [UTType.usdz])
         picker.delegate = context.coordinator
         return picker
@@ -44,7 +42,6 @@ struct DocumentPicker: UIViewControllerRepresentable {
                     // Start accessing the security scoped resource
                     if url.startAccessingSecurityScopedResource() {
                         defer {
-                            // Remember to stop accessing the resource when done
                             url.stopAccessingSecurityScopedResource()
                         }
 

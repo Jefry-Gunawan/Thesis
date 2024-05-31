@@ -32,6 +32,10 @@ struct LoadFloatingButtonView: View {
     
     @ObservedObject var objectDimensionData: ObjectDimensionData
     
+    @State private var isRoomSizeAlertPresented = false
+    @State private var newWidth: Float = 0
+    @State private var newLength: Float = 0
+    
     var body: some View {
         VStack {
             HStack {
@@ -50,6 +54,8 @@ struct LoadFloatingButtonView: View {
                             // Saving existing project
                             self.project.data = activeScene.saveScenetoExistingProject()
                             self.project.snapshotProject = activeScene.saveSnapshot()
+                            self.project.roomWidth = activeScene.floorWidth
+                            self.project.roomLength = activeScene.floorLength
                             
                             dismiss()
                         }, label: {
@@ -69,7 +75,7 @@ struct LoadFloatingButtonView: View {
                 }
                 .frame(width: 300, height: 50)
                 
-                // DImension Data
+                // Dimension Data
                 if objectDimensionData.name != nil {
                     ZStack {
                         RoundedRectangle(cornerRadius: 10)
@@ -136,6 +142,7 @@ struct LoadFloatingButtonView: View {
                         .frame(width: 300, height: 50)
                         .foregroundStyle(.regularMaterial)
                     HStack {
+                        // Open Item Collection
                         Button(action: {
                             itemCollectionOpened.toggle()
                         }, label: {
@@ -144,7 +151,10 @@ struct LoadFloatingButtonView: View {
                         })
                         .frame(width: 50, height: 50)
                         
-                        Button(action: {}, label: {
+                        // Change Room Size
+                        Button(action: {
+                            self.isRoomSizeAlertPresented = true
+                        }, label: {
                             Image(systemName: "house.fill")
                                 .foregroundStyle(textColor)
                         })
@@ -186,6 +196,20 @@ struct LoadFloatingButtonView: View {
                 
             }
             .padding()
+            .alert("New Project Name", isPresented: $isRoomSizeAlertPresented) {
+                TextField("Width", text: Binding(
+                    get: { String(newWidth) },
+                    set: { newWidth = Float($0) ?? 0 }
+                ))
+                TextField("Length", text: Binding(
+                    get: { String(newLength) },
+                    set: { newLength = Float($0) ?? 0 }
+                ))
+                Button("OK", action: {
+                    activeScene.changeFloorSize(width: newWidth, length: newLength)
+                })
+                Button("Cancel", role: .cancel) { }
+            }
             
             if itemCollectionOpened {
                 ItemCollectionView(activeScene: $activeScene, itemCollectionOpened: $itemCollectionOpened)

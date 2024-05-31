@@ -72,6 +72,7 @@ struct ImportedView: View {
         }
     }
     
+    // To clear storage on view disappear
     func deleteFileFromTemporaryStorage() {
         let fileManager = FileManager.default
 
@@ -91,6 +92,7 @@ struct ImportedView: View {
         }
     }
     
+    // To save file in Swift Data & Persistent Storagenya
     func saveToSwiftData() {
         // Coba simpan Nodenya
         var nodeData: Data? = nil
@@ -111,6 +113,7 @@ struct ImportedView: View {
         dismiss()
     }
     
+    // Agar file tidak akan hilang ketika iOS melakukan cleanup
     func moveFileToPersistentStorage(temporaryURL: URL) -> String? {
         let fileManager = FileManager.default
         
@@ -118,11 +121,10 @@ struct ImportedView: View {
             // Get the documents directory URL
             let documentsURL = try fileManager.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
             
-            // Generate a unique file name for the file in the documents directory
             let uniqueFileName = UUID().uuidString + ".usdz"
             let destinationURL = documentsURL.appendingPathComponent(uniqueFileName)
             
-            // Move the file to the documents directory
+            // Move the file to the persistent storage directory
             try fileManager.moveItem(at: temporaryURL, to: destinationURL)
             
             print("File moved to: \(destinationURL)")

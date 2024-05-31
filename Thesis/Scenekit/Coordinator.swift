@@ -22,12 +22,14 @@ class Coordinator: NSObject, UIGestureRecognizerDelegate {
         addPanGesture()
     }
     
+    // Handle Tap Gesture
     @objc func handleTap(_ gestureRecognizer: UITapGestureRecognizer) {
         let p = gestureRecognizer.location(in: parent.view)
         let hitResults = parent.view.hitTest(p, options: [:])
         
         resetMoveNode()
         
+        // To make sure system node cant be hit
         if hitResults.count > 0 && !untappableList.contains(hitResults.first?.node.name ?? "") && !moveNodeList.contains(hitResults.first?.node.name ?? "") {
             if let result = hitResults.first {
                 print("Result Name : \(result.node.name ?? "")")
@@ -43,24 +45,22 @@ class Coordinator: NSObject, UIGestureRecognizerDelegate {
                 let worldMin = tempNode!.convertPosition(worldBoundingBox.min, to: nil)
                 let worldMax = tempNode!.convertPosition(worldBoundingBox.max, to: nil)
                 
-//                print(String(format: "%.2f", worldMax.x - worldMin.x))
-//                print(String(format: "%.2f", worldMax.y - worldMin.y))
-//                print(String(format: "%.2f", worldMax.z - worldMin.z))
+                // Get width length height
+                let width = worldMax.x - worldMin.x
+                let height = worldMax.y - worldMin.y
+                let length = worldMax.z - worldMin.z
                 
-                let xFloat = worldMax.x - worldMin.x
-                let yFloat = worldMax.y - worldMin.y
-                let zFloat = worldMax.z - worldMin.z
+                parent.moveNodeModel.moveXNode.worldPosition = SCNVector3(0.5 + width/3, 0, 0)
+                parent.moveNodeModel.moveYNode.worldPosition = SCNVector3(0, 0.5 + height/3, 0)
+                parent.moveNodeModel.moveZNode.worldPosition = SCNVector3(0, 0, 0.5 + length/3)
                 
-                parent.moveNodeModel.moveXNode.worldPosition = SCNVector3(0.5 + xFloat/3, 0, 0)
-                parent.moveNodeModel.moveYNode.worldPosition = SCNVector3(0, 0.5 + yFloat/3, 0)
-                parent.moveNodeModel.moveZNode.worldPosition = SCNVector3(0, 0, 0.5 + zFloat/3)
+                parent.moveNodeModel.moveRotationNode.scale = SCNVector3(max(0.5, width * 0.75), max(0.5, height * 0.75), max(0.5, length * 0.75))
                 
-                parent.moveNodeModel.moveRotationNode.scale = SCNVector3(max(0.5, xFloat * 0.75), max(0.5, yFloat * 0.75), max(0.5, zFloat * 0.75))
-                
+                // Change dimension status
                 parent.objectDimensionData.name = result.node.name ?? "Untitled"
-                parent.objectDimensionData.width = String(format: "%.2f", xFloat)
-                parent.objectDimensionData.height = String(format: "%.2f", yFloat)
-                parent.objectDimensionData.length = String(format: "%.2f", zFloat)
+                parent.objectDimensionData.width = String(format: "%.2f", width)
+                parent.objectDimensionData.height = String(format: "%.2f", height)
+                parent.objectDimensionData.length = String(format: "%.2f", length)
                 
                 parent.moveNodeModel.moveNode.worldPosition = result.node.worldPosition
                 parent.moveNodeModel.moveNode.isHidden = false
@@ -71,12 +71,14 @@ class Coordinator: NSObject, UIGestureRecognizerDelegate {
         }
     }
     
+    // Handle long press to get move node
     @objc func handleLongPress(_ gestureRecognizer: UILongPressGestureRecognizer) {
         guard gestureRecognizer.state == .began else { return }
         
         let p = gestureRecognizer.location(in: parent.view)
         let hitResults = parent.view.hitTest(p, options: [.searchMode: SCNHitTestSearchMode.any.rawValue])
         
+        // Only applicable to move node
         if hitResults.count > 0 && !untappableList.contains(hitResults.first?.node.name ?? "") {
             for result in hitResults {
                 if moveNodeList.contains(result.node.name ?? "") {
@@ -112,17 +114,9 @@ class Coordinator: NSObject, UIGestureRecognizerDelegate {
         } else {
             parent.isEditMode = false
         }
-        
-//        switch gestureRecognizer.state {
-//        case .began:
-//            
-//        case .ended:
-//            parent.isEditMode = false
-//        default:
-//            parent.isEditMode = false
-//        }
     }
     
+    // Handle pan gesture
     @objc func handlePan(_ gestureRecognizer: UIPanGestureRecognizer) {
         guard !parent.isEditMode else {
             guard let selectedNode = selectedNode else { return }
@@ -162,6 +156,7 @@ class Coordinator: NSObject, UIGestureRecognizerDelegate {
                 parent.moveNodeModel.moveNode.worldPosition = currentPosition
             }
             
+            // Restore translation to default when not in use
             switch gestureRecognizer.state {
                 case .began:
                     lastPanTranslation = translation
@@ -194,10 +189,12 @@ class Coordinator: NSObject, UIGestureRecognizerDelegate {
         }
     }
     
+    // Allow simultaneous gestures recognized
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         return true
     }
     
+    // Reset move node position
     func resetMoveNode() {
         parent.moveNodeModel.moveNode.worldPosition = SCNVector3(0, 0, 0)
         parent.moveNodeModel.moveXNode.worldPosition = SCNVector3(0.5, 0, 0)
@@ -208,6 +205,7 @@ class Coordinator: NSObject, UIGestureRecognizerDelegate {
         resetMoveNodeEffect()
     }
     
+    // Reset move node effect when not in use
     func resetMoveNodeEffect() {
         parent.moveNodeModel.moveXNode.scale = SCNVector3(1, 1, 1)
         parent.moveNodeModel.moveYNode.scale = SCNVector3(1, 1, 1)
@@ -219,6 +217,7 @@ class Coordinator: NSObject, UIGestureRecognizerDelegate {
         parent.moveNodeModel.moveRotationNode.opacity = 0.5
     }
     
+    // Calculate camera position and rotation with gesture coordinate mapping
     func SCNVector3MultMatrix4(_ vector: SCNVector3, _ matrix: SCNMatrix4) -> SCNVector3 {
         let x = vector.x * matrix.m11 + vector.y * matrix.m21 + vector.z * matrix.m31
         let y = vector.x * matrix.m12 + vector.y * matrix.m22 + vector.z * matrix.m32
