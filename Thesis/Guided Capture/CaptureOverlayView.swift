@@ -9,6 +9,7 @@ A full-screen overlay UI with buttons that control the capture.
 import Foundation
 import RealityKit
 import SwiftUI
+import AVFoundation
 
 @available(iOS 17.0, *)
 struct CaptureOverlayView: View {
@@ -24,6 +25,8 @@ struct CaptureOverlayView: View {
     @State private var deviceOrientation: UIDeviceOrientation = UIDevice.current.orientation
     
     @Environment(\.dismiss) private var dismiss
+    
+    @State private var torch = false
 
     var body: some View {
         VStack(spacing: 20) {
@@ -91,13 +94,32 @@ struct CaptureOverlayView: View {
                 HStack {
                     Spacer()
 
-                    if !capturingStarted {
-                        HelpButton(showInfo: $showInfo)
-                            .transition(.opacity)
-                    } else if case .capturing = session.state {
-                        ManualShotButton(session: session)
-                            .transition(.opacity)
+                    Button {
+                        torch.toggle()
+                        toggleTorch(on: torch)
+                    } label: {
+                        ZStack {
+                            RoundedRectangle(cornerRadius: 10)
+                                .frame(maxWidth: 50, maxHeight: 50)
+                                .foregroundStyle(.regularMaterial)
+                            
+                            if torch {
+                                Image(systemName: "flashlight.on.fill")
+                                    .foregroundStyle(.blueButton)
+                            } else {
+                                Image(systemName: "flashlight.off.fill")
+                                    .foregroundStyle(.white)
+                            }
+                        }
                     }
+
+//                    if !capturingStarted {
+//                        HelpButton(showInfo: $showInfo)
+//                            .transition(.opacity)
+//                    } else if case .capturing = session.state {
+//                        ManualShotButton(session: session)
+//                            .transition(.opacity)
+//                    }
                 }
                 .frame(maxWidth: .infinity)
             }
@@ -167,6 +189,28 @@ struct CaptureOverlayView: View {
                 return Angle(degrees: 0)
             default:
                 return Angle(degrees: 0)
+        }
+    }
+    
+    func toggleTorch(on: Bool) {
+        guard let device = AVCaptureDevice.default(for: .video) else { return }
+
+        if device.hasTorch {
+            do {
+                try device.lockForConfiguration()
+
+                if on == true {
+                    device.torchMode = .on
+                } else {
+                    device.torchMode = .off
+                }
+
+                device.unlockForConfiguration()
+            } catch {
+                print("Torch could not be used")
+            }
+        } else {
+            print("Torch is not available")
         }
     }
 }

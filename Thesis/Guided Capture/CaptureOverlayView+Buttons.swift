@@ -28,13 +28,16 @@ extension CaptureOverlayView {
                     performAction()
                 },
                 label: {
+                    ZStack {
+                        
+                    }
                     Text(buttonlabel)
                         .font(.body)
                         .fontWeight(.bold)
                         .foregroundColor(.white)
                         .padding(.horizontal, 25)
                         .padding(.vertical, 20)
-                        .background(Color.accentColor)
+                        .background(.regularMaterial)
                         .clipShape(Capsule())
                 })
         }
