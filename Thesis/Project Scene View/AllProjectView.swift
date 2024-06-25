@@ -143,7 +143,7 @@ struct ProjectBoxView: View {
     
     var body: some View {
         NavigationLink {
-            LoadProjectSceneView(project: project, sceneView: ScenekitView(loadSceneBool: true, loadedProject: project.data, objectDimensionData: objectDimensionData), objectDimensionData: objectDimensionData)
+            LoadProjectSceneView(project: project, sceneView: ScenekitView(loadSceneBool: true, loadedProject: project.data, floorWidth: project.roomWidth, floorLength: project.roomLength, objectDimensionData: objectDimensionData), objectDimensionData: objectDimensionData)
         } label: {
             VStack {
                 ZStack {

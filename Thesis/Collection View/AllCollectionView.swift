@@ -21,6 +21,8 @@ struct AllCollectionView: View {
     @State private var importPreview = false
     @State private var usdzURL: URL?
     
+    @State private var isObjectCaptureViewPresented = false
+    
     // For Light Mode & Dark Mode support
     @Environment(\.colorScheme) var colorScheme
     var textColor: Color {
@@ -34,9 +36,19 @@ struct AllCollectionView: View {
     var body: some View {
         ScrollView {
             LazyVGrid(columns: columns, content: {
-                // Button for New Project
-                Button {
-                    self.importSheet.toggle()
+                // Button for import & scan
+                Menu {
+                    Button {
+                        self.importSheet.toggle()
+                    } label: {
+                        Text("Import from Files")
+                    }
+                    
+                    Button {
+                        self.isObjectCaptureViewPresented.toggle()
+                    } label: {
+                        Text("Scan new object")
+                    }
                 } label: {
                     VStack {
                         ZStack {
@@ -48,7 +60,7 @@ struct AllCollectionView: View {
                                 .frame(width: 120, height: 120)
                         }
                         .frame(width: 250, height: 200)
-                        Text("Import")
+                        Text("Add Items")
                             .foregroundStyle(textColor)
                     }
                 }
@@ -84,6 +96,12 @@ struct AllCollectionView: View {
         .fullScreenCover(isPresented: $importPreview) {
             ImportedView(usdzURL: $usdzURL)
         }
+        
+#if !targetEnvironment(simulator)
+        .fullScreenCover(isPresented: $isObjectCaptureViewPresented, content: {
+            GuidedCaptureView()
+        })
+#endif
     }
     
     private func deleteCollection(selectedCollection: ItemCollection) {

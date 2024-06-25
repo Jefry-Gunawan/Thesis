@@ -16,12 +16,16 @@ struct CollectionSceneKitView: UIViewRepresentable {
         view.allowsCameraControl = true
         view.backgroundColor = .black
         
-        let ambientLight = SCNLight()
-        ambientLight.type = .ambient
-        ambientLight.intensity = 500.0
-        let ambientLightNode = SCNNode()
-        ambientLightNode.light = ambientLight
-        view.scene?.rootNode.addChildNode(ambientLightNode)
+        // To ensure ambient light will be added only once
+        if ((view.scene?.rootNode.childNode(withName: "AmbientLightNode", recursively: true)) == nil) {
+            let ambientLight = SCNLight()
+            ambientLight.type = .ambient
+            ambientLight.intensity = 1000.0
+            let ambientLightNode = SCNNode()
+            ambientLightNode.light = ambientLight
+            ambientLightNode.name = "AmbientLightNode"
+            view.scene?.rootNode.addChildNode(ambientLightNode)
+        }
         
         if let loadedNode = try! NSKeyedUnarchiver.unarchivedObject(ofClass: SCNNode.self, from: collection.data) {
             // Get dimension

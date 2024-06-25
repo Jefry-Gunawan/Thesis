@@ -28,7 +28,7 @@ struct GuidedCaptureView: View {
             }
         }
         .onAppear {
-            AppDelegate.orientationLock = .portrait // And making sure it stays that way
+            //AppDelegate.orientationLock = .portrait // And making sure it stays that way
         }
         .onChange(of: appModel.state) { _, newState in
             if newState == .failed {

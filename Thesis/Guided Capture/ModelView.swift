@@ -16,9 +16,15 @@ import os
 struct ModelView: View {
     let modelFile: URL
     let endCaptureCallback: () -> Void
+    @State private var showCapturedObjectView = true
 
     var body: some View {
-        CapturedObjectView(sceneView: CapturedSceneKitView(usdzURL: modelFile), usdzURL: modelFile, endCaptureCallback: endCaptureCallback)
+        ZStack {
+            
+        }
+        .fullScreenCover(isPresented: $showCapturedObjectView) {
+            CapturedObjectView(sceneView: CapturedSceneKitView(usdzURL: modelFile), usdzURL: modelFile, endCaptureCallback: endCaptureCallback)
+        }
 //        ARQuickLookController(modelFile: modelFile, endCaptureCallback: endCaptureCallback)
     }
 }

@@ -196,14 +196,14 @@ struct LoadFloatingButtonView: View {
                 
             }
             .padding()
-            .alert("New Project Name", isPresented: $isRoomSizeAlertPresented) {
+            .alert("New Project Size", isPresented: $isRoomSizeAlertPresented) {
                 TextField("Width", text: Binding(
                     get: { String(newWidth) },
-                    set: { newWidth = Float($0) ?? 0 }
+                    set: { newWidth = Float($0) ?? activeScene.floorWidth }
                 ))
                 TextField("Length", text: Binding(
                     get: { String(newLength) },
-                    set: { newLength = Float($0) ?? 0 }
+                    set: { newLength = Float($0) ?? activeScene.floorLength }
                 ))
                 Button("OK", action: {
                     activeScene.changeFloorSize(width: newWidth, length: newLength)

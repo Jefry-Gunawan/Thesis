@@ -34,10 +34,12 @@ class ExportUSDZ {
     // 1 = AR, 2 = ShareSheet
     func exportNodeToUSDZ(selector: Int, name: String?) {
         // Create a temporary directory URL to store the USDZ file
-        guard let tempDirectoryURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
-            print("Error: Unable to access temporary directory.")
-            return
-        }
+//        guard let tempDirectoryURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
+//            print("Error: Unable to access temporary directory.")
+//            return
+//        }
+        
+        let tempDirectoryURL = FileManager.default.temporaryDirectory
         
         let usdzFileURL = tempDirectoryURL.appendingPathComponent(name ?? "Project Model.usdz")
         

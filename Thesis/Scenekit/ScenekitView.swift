@@ -16,8 +16,8 @@ struct ScenekitView: UIViewRepresentable {
     var loadSceneBool: Bool
     var loadedProject: Data = Data()
     
-    @State var floorWidth: Float = 0
-    @State var floorLength: Float = 0
+    @State var floorWidth: Float
+    @State var floorLength: Float
     
     var scene = SCNScene()
     var view = SCNView()
@@ -30,9 +30,11 @@ struct ScenekitView: UIViewRepresentable {
     
     @ObservedObject var moveNodeModel: MoveNodeModel = MoveNodeModel()
     
-    init(loadSceneBool: Bool, loadedProject: Data = Data(), objectDimensionData: ObjectDimensionData) {
+    init(loadSceneBool: Bool, loadedProject: Data = Data(), floorWidth: Float = 0, floorLength: Float = 0, objectDimensionData: ObjectDimensionData) {
         self.loadSceneBool = loadSceneBool
         self.loadedProject = loadedProject
+        self.floorWidth = floorWidth
+        self.floorLength = floorLength
         self.objectDimensionData = objectDimensionData
     }
     
@@ -214,7 +216,6 @@ struct ScenekitView: UIViewRepresentable {
     // Cari SCNFloor secara recursive
     func findFloorNode(in node: SCNNode) -> SCNFloor? {
         if node.name == "defaultFloor" {
-            print("\(node.geometry)")
         }
         if let floor = node.geometry as? SCNFloor {
             return floor
@@ -228,14 +229,14 @@ struct ScenekitView: UIViewRepresentable {
     }
     
     func changeFloorSize(width: Float, length: Float) {
-        if let floorNode = findFloorNode(in: scene.rootNode) {
-            floorNode.width = CGFloat(width)
-            floorNode.length = CGFloat(length)
+        if let floorNode = findFloorNode(in: view.scene!.rootNode) {
+            floorNode.width = CGFloat(width / 2)
+            floorNode.length = CGFloat(length / 2)
             
-            floorWidth = width
-            floorLength = length
+            self.floorWidth = width
+            self.floorLength = length
             
-            print("Floor dimension changed to \(floorWidth) x \(floorLength)")
+            print("Floor dimension changed to \(self.floorWidth) x \(self.floorLength)")
         } else {
             print("Floor node not found")
         }
