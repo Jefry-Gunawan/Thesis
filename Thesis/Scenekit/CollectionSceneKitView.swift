@@ -11,10 +11,12 @@ struct CollectionSceneKitView: UIViewRepresentable {
     
     @ObservedObject var objectDimensionData: ObjectDimensionData
     
+    @Binding var selectedColor: Color
+    
     func makeUIView(context: Context) -> some UIView {
         view.scene = scene
         view.allowsCameraControl = true
-        view.backgroundColor = .black
+        view.backgroundColor = UIColor(selectedColor)
         
         // To ensure ambient light will be added only once
         if ((view.scene?.rootNode.childNode(withName: "AmbientLightNode", recursively: true)) == nil) {
@@ -54,7 +56,7 @@ struct CollectionSceneKitView: UIViewRepresentable {
     }
     
     func updateUIView(_ uiView: UIViewType, context: Context) {
-        
+        view.backgroundColor = UIColor(selectedColor)
     }
     
     func export(selector: Int) {

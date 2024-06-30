@@ -211,5 +211,16 @@ class CaptureFolderManager: ObservableObject {
         }
         return documentsFolder.appendingPathComponent("Scans/", isDirectory: true)
     }
+    
+    // Function to delete all newly created files and directories
+    func deleteAllFiles() {
+        let fileManager = FileManager.default
+        do {
+            try fileManager.removeItem(at: rootScanFolder)
+            logger.log("Successfully deleted all files and directories at \(self.rootScanFolder.path)")
+        } catch {
+            logger.error("Failed to delete files and directories at \(self.rootScanFolder.path): \(error.localizedDescription)")
+        }
+    }
 }
 #endif

@@ -15,6 +15,8 @@ struct ARViewContainer: UIViewRepresentable {
     
     @State var rulerAnchor: [AnchorEntity] = []
     
+    @Binding var physicsOn: Bool
+    
     func makeUIView(context: Context) -> ARView {
 //        view.addCoaching()
         
@@ -53,6 +55,15 @@ struct ARViewContainer: UIViewRepresentable {
        // Add anchor to the scene
         view.scene.anchors.append(anchor)
         
+        let floor = ModelEntity(mesh: .generateBox(size: [1000, 0, 1000]), materials: [SimpleMaterial()])
+        floor.generateCollisionShapes(recursive: true)
+        if let collisionComponent = floor.components[CollisionComponent.self] as? CollisionComponent {
+            floor.components[PhysicsBodyComponent.self] = PhysicsBodyComponent(shapes: collisionComponent.shapes, mass: 0, material: nil, mode: .static)
+            floor.components[ModelComponent.self] = nil // make the floor invisible
+        }
+        floor.name = "defaultFloor-Untappable"
+        anchor.addChild(floor)
+        
         let tapGesture = UITapGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.handleTap(_:)))
         view.addGestureRecognizer(tapGesture)
         
@@ -60,7 +71,7 @@ struct ARViewContainer: UIViewRepresentable {
         for tempEntity in anchor.children {
             if let modelEntity = tempEntity as? ModelEntity {
                 if modelEntity.components[CollisionComponent.self] is CollisionComponent {
-                    view.installGestures([.translation, .rotation], for: modelEntity)
+                    view.installGestures([.translation, .rotation, .scale], for: modelEntity)
                 }
             }
         }
@@ -132,11 +143,26 @@ struct ARViewContainer: UIViewRepresentable {
                     // Give basic movement gesture
                     for modelEntity in modelEntities {
                         modelEntity.name = name
+                        
+                        let physicsMaterial = PhysicsMaterialResource.generate(
+                            friction: 10,
+                            restitution: 0
+                        )
+                        
+                        modelEntity.physicsBody = .init()
+                        modelEntity.physicsBody?.massProperties.mass = 1
+                        modelEntity.physicsBody?.material = physicsMaterial
+                        
+                        if physicsOn {
+                            modelEntity.physicsBody?.mode = .dynamic
+                        } else {
+                            modelEntity.physicsBody?.mode = .kinematic
+                        }
                        
                         anchor.addChild(modelEntity)
                         anchor.generateCollisionShapes(recursive: true)
                        
-                        view.installGestures([.translation, .rotation], for: modelEntity)
+                        view.installGestures([.translation, .rotation, .scale], for: modelEntity)
                     }
                 } else {
                     print("File does not exist at URL: \(fileURL)")
@@ -164,6 +190,41 @@ struct ARViewContainer: UIViewRepresentable {
         }
     }
     
+    func moveObjectVertical(selectorUp: Bool) {
+        let speed: Float = 0.008
+        guard let selectedEntity = objectDimensionData.selectedEntity else { return }
+        
+        if selectorUp {
+            selectedEntity.position.y += speed
+        } else {
+            selectedEntity.position.y -= speed
+        }
+    }
+    
+    func changePhysics() {
+        if textEntity != nil {
+            textEntity?.removeFromParent()
+        }
+        
+        objectDimensionData.reset()
+        
+        let entityList = findModelEntities(in: self.anchor)
+        
+        if physicsOn {
+            for modelEntity in entityList {
+                if modelEntity.name != "defaultFloor-Untappable" {
+                    modelEntity.physicsBody?.mode = .dynamic
+                }
+            }
+        } else {
+            for modelEntity in entityList {
+                if modelEntity.name != "defaultFloor-Untappable" {
+                    modelEntity.physicsBody?.mode = .kinematic
+                }
+            }
+        }
+    }
+    
     func makeCoordinator() -> Coordinator {
         Coordinator(self)
     }
@@ -176,7 +237,7 @@ struct ARViewContainer: UIViewRepresentable {
         init(_ parent: ARViewContainer) {
             self.parent = parent
             super.init()
-            addPanGesture()
+//            addPanGesture()
         }
 
         @objc func handleTap(_ gestureRecognizer: UITapGestureRecognizer) {
@@ -246,8 +307,41 @@ struct ARViewContainer: UIViewRepresentable {
             
             // Select item
             if let result = hitTests.first {
+                
+                // Floor in untappable
+                if result.name == "defaultFloor-Untappable" {
+                    print("No entity found")
+                    
+                    print("Physics \(parent.physicsOn)")
+                    if parent.physicsOn {
+                        if parent.objectDimensionData.selectedEntity != nil {
+                            let resultEntity = parent.objectDimensionData.selectedEntity as! (Entity & HasCollision & HasPhysicsBody)
+                            resultEntity.physicsBody?.mode = .dynamic
+                        }
+                    }
+                    
+                    if parent.textEntity != nil {
+                        parent.textEntity?.removeFromParent()
+                    }
+                    
+                    parent.objectDimensionData.reset()
+                    return
+                }
+                
+                if result != parent.objectDimensionData.selectedEntity {
+                    if parent.physicsOn {
+                        if parent.objectDimensionData.selectedEntity != nil {
+                            let resultEntity = parent.objectDimensionData.selectedEntity as! (Entity & HasCollision & HasPhysicsBody)
+                            resultEntity.physicsBody?.mode = .dynamic
+                        }
+                    }
+                }
+                
                 parent.objectDimensionData.selectedEntity = result
                 print("Hit entity found:", result.name)
+                
+                let resultEntity = result as! (Entity & HasCollision & HasPhysicsBody)
+                resultEntity.physicsBody?.mode = .kinematic
                 
                 // Delete text entity to make sure size stays the same
                 if parent.textEntity != nil {
@@ -305,6 +399,13 @@ struct ARViewContainer: UIViewRepresentable {
             } else {
                 print("No entity found")
                 
+                if parent.physicsOn {
+                    if parent.objectDimensionData.selectedEntity != nil {
+                        let resultEntity = parent.objectDimensionData.selectedEntity as! (Entity & HasCollision & HasPhysicsBody)
+                        resultEntity.physicsBody?.mode = .dynamic
+                    }
+                }
+                
                 if parent.textEntity != nil {
                     parent.textEntity?.removeFromParent()
                 }
@@ -314,53 +415,53 @@ struct ARViewContainer: UIViewRepresentable {
        }
         
         // Enable vertical movement by using scroll with 2 fingers
-        @objc func handlePan(_ gestureRecognizer: UIPanGestureRecognizer) {
-            if gestureRecognizer.numberOfTouches == 2 {
-                let translation = gestureRecognizer.translation(in: gestureRecognizer.view)
-                guard let selectedEntity = parent.objectDimensionData.selectedEntity else { return }
-                
-                // To make sure it returns to normal state. Cause for some reason statenya wont become .ended
-                if gestureRecognizer.state == .began {
-                    lastPanTranslation = .zero
-                }
-                
-                let translationDelta = (
-                    x: Float(translation.x - lastPanTranslation.x),
-                    y: Float(translation.y - lastPanTranslation.y),
-                    z: Float(translation.x - lastPanTranslation.x)
-                )
-                
-                var currentPosition = selectedEntity.position
-                
-                currentPosition.y -= translationDelta.y * 0.005
-                selectedEntity.position = currentPosition
-
-                switch gestureRecognizer.state {
-                case .began:
-                    lastPanTranslation = translation
-                case .changed:
-                    lastPanTranslation = translation
-                default:
-                    lastPanTranslation = .zero
-                }
-            }
-        }
-        
-        func addPanGesture() {
-            let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan(_:)))
-            panGesture.delegate = self
-            parent.view.addGestureRecognizer(panGesture)
-        }
-        
-        func removePanGesture() {
-            if let gestureRecognizers = parent.view.gestureRecognizers {
-                for gesture in gestureRecognizers {
-                    if gesture is UIPanGestureRecognizer {
-                        parent.view.removeGestureRecognizer(gesture)
-                    }
-                }
-            }
-        }
+//        @objc func handlePan(_ gestureRecognizer: UIPanGestureRecognizer) {
+//            if gestureRecognizer.numberOfTouches == 2 {
+//                let translation = gestureRecognizer.translation(in: gestureRecognizer.view)
+//                guard let selectedEntity = parent.objectDimensionData.selectedEntity else { return }
+//                
+//                // To make sure it returns to normal state. Cause for some reason statenya wont become .ended
+//                if gestureRecognizer.state == .began {
+//                    lastPanTranslation = .zero
+//                }
+//                
+//                let translationDelta = (
+//                    x: Float(translation.x - lastPanTranslation.x),
+//                    y: Float(translation.y - lastPanTranslation.y),
+//                    z: Float(translation.x - lastPanTranslation.x)
+//                )
+//                
+//                var currentPosition = selectedEntity.position
+//                
+//                currentPosition.y -= translationDelta.y * 0.005
+//                selectedEntity.position = currentPosition
+//
+//                switch gestureRecognizer.state {
+//                case .began:
+//                    lastPanTranslation = translation
+//                case .changed:
+//                    lastPanTranslation = translation
+//                default:
+//                    lastPanTranslation = .zero
+//                }
+//            }
+//        }
+//        
+//        func addPanGesture() {
+//            let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan(_:)))
+//            panGesture.delegate = self
+//            parent.view.addGestureRecognizer(panGesture)
+//        }
+//        
+//        func removePanGesture() {
+//            if let gestureRecognizers = parent.view.gestureRecognizers {
+//                for gesture in gestureRecognizers {
+//                    if gesture is UIPanGestureRecognizer {
+//                        parent.view.removeGestureRecognizer(gesture)
+//                    }
+//                }
+//            }
+//        }
     }
 }
 #endif

@@ -23,7 +23,7 @@ final class FeedbackMessages {
                 return NSLocalizedString(
                     "Move Closer (Object Capture)",
                     bundle: AppDataModel.bundleForLocalizedStrings,
-                    value: "Move Closer",
+                    value: "",
                     comment: "Feedback message to move closer for object capture")
 
             case .objectTooClose:

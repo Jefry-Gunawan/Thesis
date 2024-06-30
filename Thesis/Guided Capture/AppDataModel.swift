@@ -92,6 +92,7 @@ class AppDataModel: ObservableObject, Identifiable {
 
     func endCapture() {
         state = .completed
+        scanFolderManager.deleteAllFiles()
     }
 
     func setPreviewModelState(shown: Bool) {

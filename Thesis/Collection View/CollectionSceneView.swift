@@ -18,12 +18,15 @@ struct CollectionSceneView: View {
     
     var name: String
     
+    // Background color
+    @Binding var selectedColor: Color
+    
     var body: some View {
         ZStack {
             scene
                 .edgesIgnoringSafeArea(.all)
             
-            FloatingCollectionButtonView(scene: $scene, objectDimensionData: self.objectDimensionData, name: name)
+            FloatingCollectionButtonView(scene: $scene, objectDimensionData: self.objectDimensionData, name: name, selectedColor: $selectedColor)
         }
         .toolbar(.hidden)
         .onAppear {
@@ -40,6 +43,9 @@ struct FloatingCollectionButtonView: View {
     @ObservedObject var objectDimensionData: ObjectDimensionData
     
     var name: String
+    
+    @State private var colorPickerToggle = false
+    @Binding var selectedColor: Color
     
     var textColor: Color {
         if colorScheme == .dark {
@@ -128,19 +134,42 @@ struct FloatingCollectionButtonView: View {
                 // Share export button
                 ZStack {
                     RoundedRectangle(cornerRadius: 10)
-                        .frame(width: 50, height: 50)
+                        .frame(width: 120, height: 50)
                         .foregroundStyle(.regularMaterial)
-                    Button(action: {
-                        scene.export(selector: 2)
-                    }, label: {
-                        Image(systemName: "square.and.arrow.up")
-                            .foregroundStyle(textColor)
-                    })
-                    .frame(width: 50, height: 50)
+                    
+                    HStack {
+                        // Button Background Color
+                        Button(action: {
+                            self.colorPickerToggle.toggle()
+                        }, label: {
+                            if self.colorPickerToggle {
+                                Image(systemName: "paintbrush.fill")
+                                    .foregroundStyle(.blueButton)
+                            } else {
+                                Image(systemName: "paintbrush.fill")
+                                    .foregroundStyle(textColor)
+                            }
+                        })
+                        .frame(width: 50, height: 50)
+                        
+                        // Button Export
+                        Button(action: {
+                            scene.export(selector: 2)
+                        }, label: {
+                            Image(systemName: "square.and.arrow.up")
+                                .foregroundStyle(textColor)
+                        })
+                        .frame(width: 50, height: 50)
+                    }
                 }
-
             }
             .padding()
+            
+            if self.colorPickerToggle {
+                ColorPickerView(selectedColor: $selectedColor)
+                    .padding(.horizontal)
+            }
+            
             Spacer()
         }
     }

@@ -18,6 +18,8 @@ struct ContentView: View {
     @State var rulerMode = false
     @State var rulerDistance: String?
     
+    @State var physicsOn = false
+    
     var body: some View {
         GeometryReader{ geometry in
             NavigationStack {
@@ -150,7 +152,7 @@ struct ContentView: View {
             }
             .ignoresSafeArea()
             .fullScreenCover(isPresented: $ARTapped, content: {
-                ARPageView(arView: ARViewContainer(objectDimensionData: arObjectDimensionData, rulerMode: $rulerMode, rulerDistance: $rulerDistance), objectDimensionData: arObjectDimensionData, rulerMode: $rulerMode, rulerDistance: $rulerDistance)
+                ARPageView(arView: ARViewContainer(objectDimensionData: arObjectDimensionData, rulerMode: $rulerMode, rulerDistance: $rulerDistance, physicsOn: $physicsOn), objectDimensionData: arObjectDimensionData, rulerMode: $rulerMode, rulerDistance: $rulerDistance, physicsOn: $physicsOn)
             })
             .onAppear {
                 AppDelegate.orientationLock = .landscape

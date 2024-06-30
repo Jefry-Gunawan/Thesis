@@ -23,6 +23,9 @@ struct AllCollectionView: View {
     
     @State private var isObjectCaptureViewPresented = false
     
+    // Background Color
+    @State var selectedColor = Color.black
+    
     // For Light Mode & Dark Mode support
     @Environment(\.colorScheme) var colorScheme
     var textColor: Color {
@@ -66,7 +69,7 @@ struct AllCollectionView: View {
                 }
                 
                 ForEach(collections) { collection in
-                    CollectionBoxView(collection: collection)
+                    CollectionBoxView(collection: collection, selectedColor: $selectedColor)
                         .padding()
                         .contextMenu(ContextMenu(menuItems: {
                             Button(action: {
@@ -106,6 +109,22 @@ struct AllCollectionView: View {
     
     private func deleteCollection(selectedCollection: ItemCollection) {
         withAnimation {
+            // Delete USDZ Files
+            let fileManager  = FileManager.default
+            
+            do {
+                // Get the documents directory URL
+                let documentsURL = try fileManager.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
+                
+                // Construct the file URL using the relative path
+                let fileURL = documentsURL.appendingPathComponent(selectedCollection.dataURL)
+                
+                try fileManager.removeItem(at: fileURL)
+                print("Selected collection has been deleted successfully at \(fileURL)")
+            } catch {
+                print("Could not delete file : \(error.localizedDescription)")
+            }
+            
             modelContext.delete(selectedCollection)
         }
     }
@@ -139,9 +158,11 @@ struct CollectionBoxView: View {
     
     @State var objectDimensionData = ObjectDimensionData()
     
+    @Binding var selectedColor: Color
+    
     var body: some View {
         NavigationLink {
-            CollectionSceneView(scene: CollectionSceneKitView(collection: collection, objectDimensionData: self.objectDimensionData), objectDimensionData: self.objectDimensionData, name: collection.name)
+            CollectionSceneView(scene: CollectionSceneKitView(collection: collection, objectDimensionData: self.objectDimensionData, selectedColor: $selectedColor), objectDimensionData: self.objectDimensionData, name: collection.name, selectedColor: $selectedColor)
         } label: {
             VStack {
                 ZStack {
