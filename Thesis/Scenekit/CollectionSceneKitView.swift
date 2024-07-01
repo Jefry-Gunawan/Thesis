@@ -29,25 +29,42 @@ struct CollectionSceneKitView: UIViewRepresentable {
             view.scene?.rootNode.addChildNode(ambientLightNode)
         }
         
-        if let loadedNode = try! NSKeyedUnarchiver.unarchivedObject(ofClass: SCNNode.self, from: collection.data) {
-            // Get dimension
-            loadedNode.eulerAngles.y = 0
+        let fileManager = FileManager.default
+        do {
+            // Get the documents directory URL
+            let documentsURL = try fileManager.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
             
-            let worldBoundingBox = loadedNode.boundingBox
-            let worldMin = loadedNode.convertPosition(worldBoundingBox.min, to: nil)
-            let worldMax = loadedNode.convertPosition(worldBoundingBox.max, to: nil)
+            // Construct the file URL using the relative path
+            let fileURL = documentsURL.appendingPathComponent(collection.dataURL)
             
-            // Get width length height
-            let width = worldMax.x - worldMin.x
-            let height = worldMax.y - worldMin.y
-            let length = worldMax.z - worldMin.z
-            
-            objectDimensionData.name = loadedNode.name ?? "Untitled"
-            objectDimensionData.width = String(format: "%.3f", width)
-            objectDimensionData.height = String(format: "%.3f", height)
-            objectDimensionData.length = String(format: "%.3f", length)
-            
-            view.scene?.rootNode.addChildNode(loadedNode)
+            if fileManager.fileExists(atPath: fileURL.path) {
+                print("File exists at URL: \(fileURL)")
+                
+                if let modelasset = try? SCNScene(url: fileURL), let loadedNode = modelasset.rootNode.childNodes.first?.clone() {
+                    // Get dimension
+                    loadedNode.eulerAngles.y = 0
+                    
+                    let worldBoundingBox = loadedNode.boundingBox
+                    let worldMin = loadedNode.convertPosition(worldBoundingBox.min, to: nil)
+                    let worldMax = loadedNode.convertPosition(worldBoundingBox.max, to: nil)
+                    
+                    // Get width length height
+                    let width = worldMax.x - worldMin.x
+                    let height = worldMax.y - worldMin.y
+                    let length = worldMax.z - worldMin.z
+                    
+                    objectDimensionData.name = loadedNode.name ?? "Untitled"
+                    objectDimensionData.width = String(format: "%.3f", width)
+                    objectDimensionData.height = String(format: "%.3f", height)
+                    objectDimensionData.length = String(format: "%.3f", length)
+                    
+                    view.scene?.rootNode.addChildNode(loadedNode)
+                }
+            } else {
+                print("File does not exist at URL: \(fileURL)")
+            }
+        } catch {
+            print("Error accessing file: \(error)")
         }
         
 //        view.pointOfView?.localTranslate(by: SCNVector3(x: 0, y: 0, z: 1))

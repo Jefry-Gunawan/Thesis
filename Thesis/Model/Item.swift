@@ -31,14 +31,12 @@ final class Project {
 final class ItemCollection {
     var id: UUID
     var name: String
-    var data: Data
     var dataURL: String!
     var snapshotItem: Data
     
-    init(id: UUID, name: String, data: Data, dataURL: String!, snapshotItem: Data) {
+    init(id: UUID, name: String, dataURL: String!, snapshotItem: Data) {
         self.id = id
         self.name = name
-        self.data = data
         self.dataURL = dataURL
         self.snapshotItem = snapshotItem
     }

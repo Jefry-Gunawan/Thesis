@@ -14,7 +14,7 @@ struct AllCollectionView: View {
     
     @State private var isAlertPresented = false
     @State private var collectionName = ""
-    @State private var selectedCollection: ItemCollection = ItemCollection(id: UUID(), name: "", data: Data(), dataURL: "", snapshotItem: Data())
+    @State private var selectedCollection: ItemCollection = ItemCollection(id: UUID(), name: "", dataURL: "", snapshotItem: Data())
     @State private var ARTapped = false
     
     @State private var importSheet = false
@@ -132,7 +132,7 @@ struct AllCollectionView: View {
     private func renameCollection() {
         selectedCollection.name = (collectionName != "") ? collectionName : "Untitled"
         
-        selectedCollection = ItemCollection(id: UUID(), name: "", data: Data(), dataURL: "", snapshotItem: Data())
+        selectedCollection = ItemCollection(id: UUID(), name: "", dataURL: "", snapshotItem: Data())
         collectionName = ""
         
         do {

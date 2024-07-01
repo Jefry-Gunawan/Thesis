@@ -94,19 +94,13 @@ struct ImportedView: View {
     
     // To save file in Swift Data & Persistent Storagenya
     func saveToSwiftData() {
-        // Coba simpan Nodenya
-        var nodeData: Data? = nil
-        if let modelasset = try? SCNScene(url: usdzURL!), let modelNode = modelasset.rootNode.childNodes.first?.clone() {
-            nodeData = try! NSKeyedArchiver.archivedData(withRootObject: modelNode, requiringSecureCoding: true)
-        }
-        
         let dataURL = moveFileToPersistentStorage(temporaryURL: usdzURL!)
         
         let snapImage = sceneView!.view.snapshot()
         
         let imageData = snapImage.pngData() ?? Data()
         
-        let newItems = ItemCollection(id: UUID(), name: (fileName != "") ? fileName : "Untitled", data: nodeData!, dataURL: dataURL, snapshotItem: imageData)
+        let newItems = ItemCollection(id: UUID(), name: (fileName != "") ? fileName : "Untitled", dataURL: dataURL, snapshotItem: imageData)
                     
         modelContext.insert(newItems)
         

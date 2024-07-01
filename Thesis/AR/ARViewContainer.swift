@@ -125,51 +125,51 @@ struct ARViewContainer: UIViewRepresentable {
     // Add new item
     func addItem(name: String, dataURL: String) {
         let fileManager = FileManager.default
-            do {
-                // Get the documents directory URL
-                let documentsURL = try fileManager.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
+        do {
+            // Get the documents directory URL
+            let documentsURL = try fileManager.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
+            
+            // Construct the file URL using the relative path
+            let fileURL = documentsURL.appendingPathComponent(dataURL)
+            
+            if fileManager.fileExists(atPath: fileURL.path) {
+                print("File exists at URL: \(fileURL)")
                 
-                // Construct the file URL using the relative path
-                let fileURL = documentsURL.appendingPathComponent(dataURL)
+                let item = try Entity.load(contentsOf: fileURL)
                 
-                if fileManager.fileExists(atPath: fileURL.path) {
-                    print("File exists at URL: \(fileURL)")
+                // Cari yang model entity secara recursive
+                let modelEntities = findModelEntities(in: item)
+                           
+                // Give basic movement gesture
+                for modelEntity in modelEntities {
+                    modelEntity.name = name
                     
-                    let item = try Entity.load(contentsOf: fileURL)
+                    let physicsMaterial = PhysicsMaterialResource.generate(
+                        friction: 10,
+                        restitution: 0
+                    )
                     
-                    // Cari yang model entity secara recursive
-                    let modelEntities = findModelEntities(in: item)
-                               
-                    // Give basic movement gesture
-                    for modelEntity in modelEntities {
-                        modelEntity.name = name
-                        
-                        let physicsMaterial = PhysicsMaterialResource.generate(
-                            friction: 10,
-                            restitution: 0
-                        )
-                        
-                        modelEntity.physicsBody = .init()
-                        modelEntity.physicsBody?.massProperties.mass = 1
-                        modelEntity.physicsBody?.material = physicsMaterial
-                        
-                        if physicsOn {
-                            modelEntity.physicsBody?.mode = .dynamic
-                        } else {
-                            modelEntity.physicsBody?.mode = .kinematic
-                        }
-                       
-                        anchor.addChild(modelEntity)
-                        anchor.generateCollisionShapes(recursive: true)
-                       
-                        view.installGestures([.translation, .rotation, .scale], for: modelEntity)
+                    modelEntity.physicsBody = .init()
+                    modelEntity.physicsBody?.massProperties.mass = 1
+                    modelEntity.physicsBody?.material = physicsMaterial
+                    
+                    if physicsOn {
+                        modelEntity.physicsBody?.mode = .dynamic
+                    } else {
+                        modelEntity.physicsBody?.mode = .kinematic
                     }
-                } else {
-                    print("File does not exist at URL: \(fileURL)")
+                   
+                    anchor.addChild(modelEntity)
+                    anchor.generateCollisionShapes(recursive: true)
+                   
+                    view.installGestures([.translation, .rotation, .scale], for: modelEntity)
                 }
-            } catch {
-                print("Error accessing file: \(error)")
+            } else {
+                print("File does not exist at URL: \(fileURL)")
             }
+        } catch {
+            print("Error accessing file: \(error)")
+        }
     }
     
     func removeEntity() {

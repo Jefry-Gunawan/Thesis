@@ -18,7 +18,7 @@ struct ARItemCollectionView: View {
     
     @State private var isAlertPresented = false
     @State private var fileName = ""
-    @State private var selectedItem: ItemCollection = ItemCollection(id: UUID(), name: "", data: Data(), dataURL: nil, snapshotItem: Data())
+    @State private var selectedItem: ItemCollection = ItemCollection(id: UUID(), name: "", dataURL: nil, snapshotItem: Data())
     
     let columns = [
         GridItem(.flexible()),
@@ -84,7 +84,7 @@ struct ARItemCollectionView: View {
     private func renameItem() {
         selectedItem.name = (fileName != "") ? fileName : "Untitled"
         
-        selectedItem = ItemCollection(id: UUID(), name: "", data: Data(), dataURL: nil, snapshotItem: Data())
+        selectedItem = ItemCollection(id: UUID(), name: "", dataURL: nil, snapshotItem: Data())
         fileName = ""
         do {
             try modelContext.save()

@@ -17,7 +17,7 @@ struct ItemCollectionView: View {
     
     @State private var isAlertPresented = false
     @State private var fileName = ""
-    @State private var selectedItem: ItemCollection = ItemCollection(id: UUID(), name: "", data: Data(), dataURL: nil, snapshotItem: Data())
+    @State private var selectedItem: ItemCollection = ItemCollection(id: UUID(), name: "", dataURL: nil, snapshotItem: Data())
     
     let columns = [
         GridItem(.flexible()),
@@ -78,7 +78,7 @@ struct ItemCollectionView: View {
     private func renameItem() {
         selectedItem.name = (fileName != "") ? fileName : "Untitled"
         
-        selectedItem = ItemCollection(id: UUID(), name: "", data: Data(), dataURL: nil, snapshotItem: Data())
+        selectedItem = ItemCollection(id: UUID(), name: "", dataURL: nil, snapshotItem: Data())
         fileName = ""
         do {
             try modelContext.save()
@@ -104,9 +104,26 @@ struct ItemBoxView: View {
     
     var body: some View {
         Button {
-            if let loadedNode = try! NSKeyedUnarchiver.unarchivedObject(ofClass: SCNNode.self, from: item.data) {
-                activeScene.view.scene?.rootNode.addChildNode(loadedNode)
-                itemCollectionOpened = false
+            let fileManager = FileManager.default
+            do {
+                // Get the documents directory URL
+                let documentsURL = try fileManager.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
+                
+                // Construct the file URL using the relative path
+                let fileURL = documentsURL.appendingPathComponent(item.dataURL)
+                
+                if fileManager.fileExists(atPath: fileURL.path) {
+                    print("File exists at URL: \(fileURL)")
+                    
+                    if let modelasset = try? SCNScene(url: fileURL), let modelNode = modelasset.rootNode.childNodes.first?.clone() {
+                        activeScene.view.scene?.rootNode.addChildNode(modelNode)
+                        itemCollectionOpened = false
+                    }
+                } else {
+                    print("File does not exist at URL: \(fileURL)")
+                }
+            } catch {
+                print("Error accessing file: \(error)")
             }
         } label: {
             VStack {

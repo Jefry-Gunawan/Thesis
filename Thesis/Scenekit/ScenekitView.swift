@@ -284,10 +284,15 @@ struct ScenekitView: UIViewRepresentable {
     }
     
     // Load item from swift data
-    func loadItem(loadedItem: Data) {
+    func loadItem(loadedItem: Data, loadedItemURL: URL) {
         // Kalau nyimpennya pakai SCNNode
         if let loadedNode = try! NSKeyedUnarchiver.unarchivedObject(ofClass: SCNNode.self, from: loadedItem) {
             view.scene?.rootNode.addChildNode(loadedNode)
+        }
+        
+        var nodeData: Data? = nil
+        if let modelasset = try? SCNScene(url: usdzURL!), let modelNode = modelasset.rootNode.childNodes.first?.clone() {
+            nodeData = try! NSKeyedArchiver.archivedData(withRootObject: modelNode, requiringSecureCoding: true)
         }
     }
     
