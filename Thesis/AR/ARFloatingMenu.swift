@@ -46,6 +46,10 @@ struct ARFloatingMenu: View {
     @State private var settingViewBool = false
     @Binding var physicsOn: Bool
     
+    @State private var colorViewBool = false
+    @Binding var colorToggle: Bool
+    @Binding var selectedColor: Color
+    
     var body: some View {
         ZStack {
             // Button snapshot biar center dan bagus
@@ -222,6 +226,29 @@ struct ARFloatingMenu: View {
                                         .foregroundStyle(.white)
                                 }
                             }
+                            
+                            // Object Color Change Button
+                            Button {
+                                colorViewBool.toggle()
+                                itemCollectionOpened = false
+                                settingViewBool = false
+                            } label: {
+                                ZStack {
+                                    if colorViewBool {
+                                        RoundedRectangle(cornerRadius: 10)
+                                            .frame(width: 50, height: 50)
+                                            .foregroundStyle(.regularMaterial)
+                                        Image(systemName: "circle.bottomrighthalf.checkered")
+                                            .foregroundStyle(.blueButton)
+                                    } else {
+                                        RoundedRectangle(cornerRadius: 10)
+                                            .frame(width: 50, height: 50)
+                                            .foregroundStyle(.regularMaterial)
+                                        Image(systemName: "circle.bottomrighthalf.checkered")
+                                            .foregroundStyle(.white)
+                                    }
+                                }
+                            }
                         } else {
                             Spacer()
                         }
@@ -236,6 +263,7 @@ struct ARFloatingMenu: View {
                             Button(action: {
                                 self.settingViewBool.toggle()
                                 itemCollectionOpened = false
+                                colorViewBool = false
                             }, label: {
                                 if self.settingViewBool {
                                     Image(systemName: "paintbrush.fill")
@@ -251,6 +279,7 @@ struct ARFloatingMenu: View {
                             Button(action: {
                                 itemCollectionOpened.toggle()
                                 settingViewBool = false
+                                colorViewBool = false
                             }, label: {
                                 if itemCollectionOpened {
                                     Image(systemName: "chair.lounge.fill")
@@ -303,8 +332,13 @@ struct ARFloatingMenu: View {
                 }
     #endif
                 
-                if self.settingViewBool {
+                if settingViewBool {
                     ARSettingView(activeARView: $activeARView, physicsOn: $physicsOn)
+                        .padding(.horizontal)
+                }
+                
+                if colorViewBool && objectDimensionData.name != nil {
+                    ARColorView(activeARView: $activeARView, colorToggle: $colorToggle, selectedColor: $selectedColor)
                         .padding(.horizontal)
                 }
                 Spacer()

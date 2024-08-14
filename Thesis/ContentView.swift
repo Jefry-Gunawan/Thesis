@@ -18,7 +18,10 @@ struct ContentView: View {
     @State var rulerMode = false
     @State var rulerDistance: String?
     
+    // AR Setting
     @State var physicsOn = false
+    @State var colorToggle = false
+    @State var selectedColor = Color.black
     
     var body: some View {
         GeometryReader{ geometry in
@@ -152,7 +155,7 @@ struct ContentView: View {
             }
             .ignoresSafeArea()
             .fullScreenCover(isPresented: $ARTapped, content: {
-                ARPageView(arView: ARViewContainer(objectDimensionData: arObjectDimensionData, rulerMode: $rulerMode, rulerDistance: $rulerDistance, physicsOn: $physicsOn), objectDimensionData: arObjectDimensionData, rulerMode: $rulerMode, rulerDistance: $rulerDistance, physicsOn: $physicsOn)
+                ARPageView(arView: ARViewContainer(objectDimensionData: arObjectDimensionData, rulerMode: $rulerMode, rulerDistance: $rulerDistance, physicsOn: $physicsOn, colorToggle: $colorToggle, selectedColor: $selectedColor), objectDimensionData: arObjectDimensionData, rulerMode: $rulerMode, rulerDistance: $rulerDistance, physicsOn: $physicsOn, colorToggle: $colorToggle, selectedColor: $selectedColor)
             })
             .onAppear {
                 AppDelegate.orientationLock = .landscape

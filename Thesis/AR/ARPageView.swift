@@ -14,12 +14,15 @@ struct ARPageView: View {
     @Binding var rulerDistance: String?
     @Binding var physicsOn: Bool
     
+    @Binding var colorToggle: Bool
+    @Binding var selectedColor: Color
+    
     var body: some View {
         ZStack {
             arView
                 .edgesIgnoringSafeArea(.all)
             
-            ARFloatingMenu(activeARView: $arView, objectDimensionData: objectDimensionData, rulerMode: $rulerMode, rulerDistance: $rulerDistance, physicsOn: $physicsOn)
+            ARFloatingMenu(activeARView: $arView, objectDimensionData: objectDimensionData, rulerMode: $rulerMode, rulerDistance: $rulerDistance, physicsOn: $physicsOn, colorToggle: $colorToggle, selectedColor: $selectedColor)
         }
         .toolbar(.hidden)
     }

@@ -17,6 +17,9 @@ struct ARViewContainer: UIViewRepresentable {
     
     @Binding var physicsOn: Bool
     
+    @Binding var colorToggle: Bool
+    @Binding var selectedColor: Color
+    
     func makeUIView(context: Context) -> ARView {
 //        view.addCoaching()
         
@@ -91,6 +94,17 @@ struct ARViewContainer: UIViewRepresentable {
             self.rulerAnchor.removeAll()
             self.rulerDistance = nil
         }
+        
+        if colorToggle {
+            if let modelEntity = objectDimensionData.selectedEntity as? ModelEntity {
+                if var material = modelEntity.model?.materials.first as? SimpleMaterial {
+                    print("Color \(selectedColor)")
+                    let material = SimpleMaterial(color: UIColor(selectedColor), isMetallic: true)
+                    modelEntity.model?.materials.remove(at: 0)
+                    modelEntity.model?.materials.insert(material, at: 0)
+                }
+            }
+        }
     }
     
     // To destroy the old entity and stop the AR from running in the background
@@ -152,6 +166,10 @@ struct ARViewContainer: UIViewRepresentable {
                     modelEntity.physicsBody = .init()
                     modelEntity.physicsBody?.massProperties.mass = 1
                     modelEntity.physicsBody?.material = physicsMaterial
+
+                    var colorMaterial = SimpleMaterial(color: .black, isMetallic: true)
+                    
+                    modelEntity.model?.materials.insert(colorMaterial, at: 1)
                     
                     if physicsOn {
                         modelEntity.physicsBody?.mode = .dynamic
@@ -162,7 +180,7 @@ struct ARViewContainer: UIViewRepresentable {
                     anchor.addChild(modelEntity)
                     anchor.generateCollisionShapes(recursive: true)
                    
-                    view.installGestures([.translation, .rotation, .scale], for: modelEntity)
+                    view.installGestures([.translation, .rotation], for: modelEntity)
                 }
             } else {
                 print("File does not exist at URL: \(fileURL)")
@@ -222,6 +240,20 @@ struct ARViewContainer: UIViewRepresentable {
                     modelEntity.physicsBody?.mode = .kinematic
                 }
             }
+        }
+    }
+    
+    func changeMaterial(colorToggle: Bool) {
+        if let modelEntity = objectDimensionData.selectedEntity as? ModelEntity {
+            let temp = modelEntity.model?.materials.first
+            
+            // Kinda buggy
+            if temp is SimpleMaterial && colorToggle {
+                return
+            }
+            
+            modelEntity.model?.materials.remove(at: 0)
+            modelEntity.model?.materials.append(temp!)
         }
     }
     
@@ -343,6 +375,15 @@ struct ARViewContainer: UIViewRepresentable {
                 let resultEntity = result as! (Entity & HasCollision & HasPhysicsBody)
                 resultEntity.physicsBody?.mode = .kinematic
                 
+                // Check if the first material is SimpleMaterial
+                if let modelEntity = result as? ModelEntity, let firstMaterial = modelEntity.model?.materials.first {
+                    if firstMaterial is SimpleMaterial {
+                        parent.colorToggle = true
+                    } else {
+                        parent.colorToggle = false
+                    }
+                }
+                
                 // Delete text entity to make sure size stays the same
                 if parent.textEntity != nil {
                     parent.textEntity?.removeFromParent()
@@ -396,6 +437,8 @@ struct ARViewContainer: UIViewRepresentable {
                 print(textEntity.position)
                 
                 result.addChild(textEntity)
+                
+                
             } else {
                 print("No entity found")
                 
@@ -413,55 +456,6 @@ struct ARViewContainer: UIViewRepresentable {
                 parent.objectDimensionData.reset()
             }
        }
-        
-        // Enable vertical movement by using scroll with 2 fingers
-//        @objc func handlePan(_ gestureRecognizer: UIPanGestureRecognizer) {
-//            if gestureRecognizer.numberOfTouches == 2 {
-//                let translation = gestureRecognizer.translation(in: gestureRecognizer.view)
-//                guard let selectedEntity = parent.objectDimensionData.selectedEntity else { return }
-//                
-//                // To make sure it returns to normal state. Cause for some reason statenya wont become .ended
-//                if gestureRecognizer.state == .began {
-//                    lastPanTranslation = .zero
-//                }
-//                
-//                let translationDelta = (
-//                    x: Float(translation.x - lastPanTranslation.x),
-//                    y: Float(translation.y - lastPanTranslation.y),
-//                    z: Float(translation.x - lastPanTranslation.x)
-//                )
-//                
-//                var currentPosition = selectedEntity.position
-//                
-//                currentPosition.y -= translationDelta.y * 0.005
-//                selectedEntity.position = currentPosition
-//
-//                switch gestureRecognizer.state {
-//                case .began:
-//                    lastPanTranslation = translation
-//                case .changed:
-//                    lastPanTranslation = translation
-//                default:
-//                    lastPanTranslation = .zero
-//                }
-//            }
-//        }
-//        
-//        func addPanGesture() {
-//            let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan(_:)))
-//            panGesture.delegate = self
-//            parent.view.addGestureRecognizer(panGesture)
-//        }
-//        
-//        func removePanGesture() {
-//            if let gestureRecognizers = parent.view.gestureRecognizers {
-//                for gesture in gestureRecognizers {
-//                    if gesture is UIPanGestureRecognizer {
-//                        parent.view.removeGestureRecognizer(gesture)
-//                    }
-//                }
-//            }
-//        }
     }
 }
 #endif

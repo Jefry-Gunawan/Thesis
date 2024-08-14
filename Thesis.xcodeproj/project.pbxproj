@@ -10,6 +10,7 @@
 		9407C20F2B7A4700005B0B98 /* CapturedObjectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9407C20E2B7A4700005B0B98 /* CapturedObjectView.swift */; };
 		9407C2112B7A473A005B0B98 /* CapturedSceneKitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9407C2102B7A473A005B0B98 /* CapturedSceneKitView.swift */; };
 		9426DA962B73DBD600E1D2D5 /* AllProjectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9426DA952B73DBD600E1D2D5 /* AllProjectView.swift */; };
+		942E47802C34FC2500416B47 /* ARColorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 942E477F2C34FC2500416B47 /* ARColorView.swift */; };
 		9435DB2D2B80D7ED00CFE678 /* MoveNodeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9435DB2C2B80D7ED00CFE678 /* MoveNodeModel.swift */; };
 		9443784B2BD25ADC0084A71C /* AllCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9443784A2BD25ADC0084A71C /* AllCollectionView.swift */; };
 		9443784D2BD25F7A0084A71C /* CollectionSceneKitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9443784C2BD25F7A0084A71C /* CollectionSceneKitView.swift */; };
@@ -80,6 +81,7 @@
 		9407C20E2B7A4700005B0B98 /* CapturedObjectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CapturedObjectView.swift; sourceTree = "<group>"; };
 		9407C2102B7A473A005B0B98 /* CapturedSceneKitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CapturedSceneKitView.swift; sourceTree = "<group>"; };
 		9426DA952B73DBD600E1D2D5 /* AllProjectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllProjectView.swift; sourceTree = "<group>"; };
+		942E477F2C34FC2500416B47 /* ARColorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARColorView.swift; sourceTree = "<group>"; };
 		9435DB2C2B80D7ED00CFE678 /* MoveNodeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoveNodeModel.swift; sourceTree = "<group>"; };
 		9443784A2BD25ADC0084A71C /* AllCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllCollectionView.swift; sourceTree = "<group>"; };
 		9443784C2BD25F7A0084A71C /* CollectionSceneKitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionSceneKitView.swift; sourceTree = "<group>"; };
@@ -266,6 +268,7 @@
 				947552682B9080E400ED3E41 /* ARFloatingMenu.swift */,
 				9475526A2B9081D000ED3E41 /* ARItemCollectionView.swift */,
 				94C59DEA2C30296400472F3E /* ARSettingView.swift */,
+				942E477F2C34FC2500416B47 /* ARColorView.swift */,
 			);
 			path = AR;
 			sourceTree = "<group>";
@@ -409,6 +412,7 @@
 				949E57D02B78A80900BCEA1A /* OnboardingStateMachine.swift in Sources */,
 				949E57E72B78A80900BCEA1A /* ReconstructionPrimaryView.swift in Sources */,
 				949E57CC2B78A80900BCEA1A /* ShotFileInfo.swift in Sources */,
+				942E47802C34FC2500416B47 /* ARColorView.swift in Sources */,
 				949E57D52B78A80900BCEA1A /* ProgressBarView.swift in Sources */,
 				947552692B9080E400ED3E41 /* ARFloatingMenu.swift in Sources */,
 				949E57CE2B78A80900BCEA1A /* FeedbackMessages.swift in Sources */,
